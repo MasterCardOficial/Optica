@@ -16,13 +16,16 @@ ENV/
 dist/
 build/
 
-# Credenciales sensibles
+# Credenciales sensibles (NO SUBIR)
 python-email-sender/credentials.json
 python-email-sender/config.py
 *.log
+.env
+.env.local
 
 # Node modules
 node_modules/
+package-lock.json
 
 # IDEs
 .vscode/
@@ -34,3 +37,7 @@ node_modules/
 # Temporales
 *.tmp
 *.bak
+*.zip
+
+# Render
+.render/
