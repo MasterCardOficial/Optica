@@ -1,0 +1,337 @@
+/**
+ * SURTILENTES - CSS VARIABLES
+ * Sistema de diseño profesional para óptica
+ */
+
+:root {
+    /* ============================================
+       COLORES PRINCIPALES
+       ============================================ */
+    
+    /* Colores de Marca */
+    --primary: #0A2463;              /* Azul oscuro profesional */
+    --primary-dark: #03045E;         /* Navy oscuro */
+    --primary-light: #3E92CC;        /* Azul medio */
+    
+    --secondary: #00B4D8;            /* Cyan vibrante */
+    --secondary-light: #90E0EF;      /* Cyan claro */
+    --secondary-lighter: #CAF0F8;    /* Cyan muy claro */
+    
+    --accent: #06D6A0;               /* Verde agua (CTA) */
+    --accent-hover: #05B589;         /* Verde agua oscuro */
+    
+    /* Colores de Estado */
+    --success: #06D6A0;
+    --warning: #FFB703;
+    --error: #E63946;
+    --info: #00B4D8;
+    
+    /* Escala de Grises */
+    --gray-900: #1A1A1A;
+    --gray-800: #2D2D2D;
+    --gray-700: #495057;
+    --gray-600: #6C757D;
+    --gray-500: #ADB5BD;
+    --gray-400: #CED4DA;
+    --gray-300: #DEE2E6;
+    --gray-200: #E9ECEF;
+    --gray-100: #F8F9FA;
+    
+    --white: #FFFFFF;
+    --black: #000000;
+    
+    /* Colores de Fondo */
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F8F9FA;
+    --bg-dark: var(--primary-dark);
+    --bg-gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    
+    /* ============================================
+       TIPOGRAFÍA
+       ============================================ */
+    
+    /* Font Families */
+    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-heading: 'Playfair Display', Georgia, serif;
+    --font-accent: 'Montserrat', sans-serif;
+    
+    /* Font Sizes - Escala Modular (1.250) */
+    --text-xs: 0.75rem;      /* 12px */
+    --text-sm: 0.875rem;     /* 14px */
+    --text-base: 1rem;       /* 16px */
+    --text-lg: 1.125rem;     /* 18px */
+    --text-xl: 1.25rem;      /* 20px */
+    --text-2xl: 1.563rem;    /* 25px */
+    --text-3xl: 1.953rem;    /* 31px */
+    --text-4xl: 2.441rem;    /* 39px */
+    --text-5xl: 3.052rem;    /* 49px */
+    --text-6xl: 3.815rem;    /* 61px */
+    
+    /* Font Weights */
+    --font-light: 300;
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+    --font-bold: 700;
+    --font-extrabold: 800;
+    
+    /* Line Heights */
+    --leading-none: 1;
+    --leading-tight: 1.25;
+    --leading-snug: 1.375;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.625;
+    --leading-loose: 2;
+    
+    /* Letter Spacing */
+    --tracking-tight: -0.025em;
+    --tracking-normal: 0;
+    --tracking-wide: 0.025em;
+    --tracking-wider: 0.05em;
+    --tracking-widest: 0.1em;
+    
+    /* ============================================
+       ESPACIADO
+       ============================================ */
+    
+    --space-1: 0.25rem;    /* 4px */
+    --space-2: 0.5rem;     /* 8px */
+    --space-3: 0.75rem;    /* 12px */
+    --space-4: 1rem;       /* 16px */
+    --space-5: 1.25rem;    /* 20px */
+    --space-6: 1.5rem;     /* 24px */
+    --space-8: 2rem;       /* 32px */
+    --space-10: 2.5rem;    /* 40px */
+    --space-12: 3rem;      /* 48px */
+    --space-16: 4rem;      /* 64px */
+    --space-20: 5rem;      /* 80px */
+    --space-24: 6rem;      /* 96px */
+    --space-32: 8rem;      /* 128px */
+    
+    /* Secciones */
+    --section-padding: 5rem 0;
+    --section-padding-sm: 3rem 0;
+    
+    /* ============================================
+       BORDES Y SOMBRAS
+       ============================================ */
+    
+    /* Border Radius */
+    --radius-sm: 0.25rem;    /* 4px */
+    --radius: 0.5rem;        /* 8px */
+    --radius-md: 0.75rem;    /* 12px */
+    --radius-lg: 1rem;       /* 16px */
+    --radius-xl: 1.5rem;     /* 24px */
+    --radius-2xl: 2rem;      /* 32px */
+    --radius-full: 9999px;
+    
+    /* Shadows */
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --shadow-2xl: 0 35px 60px -15px rgba(0, 0, 0, 0.3);
+    
+    /* Shadow Colors */
+    --shadow-primary: 0 10px 30px rgba(10, 36, 99, 0.15);
+    --shadow-secondary: 0 10px 30px rgba(0, 180, 216, 0.15);
+    --shadow-accent: 0 10px 30px rgba(6, 214, 160, 0.15);
+    
+    /* ============================================
+       TRANSICIONES
+       ============================================ */
+    
+    --transition-fast: 150ms ease-in-out;
+    --transition-base: 300ms ease-in-out;
+    --transition-slow: 500ms ease-in-out;
+    
+    --ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    /* ============================================
+       BREAKPOINTS (para usar en JS)
+       ============================================ */
+    
+    --breakpoint-xs: 0;
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+    --breakpoint-2xl: 1400px;
+    
+    /* ============================================
+       Z-INDEX
+       ============================================ */
+    
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+    
+    /* ============================================
+       DIMENSIONES
+       ============================================ */
+    
+    /* Container Max Width */
+    --container-sm: 640px;
+    --container-md: 768px;
+    --container-lg: 1024px;
+    --container-xl: 1280px;
+    --container-2xl: 1536px;
+    
+    /* Navbar */
+    --navbar-height: 80px;
+    --navbar-height-mobile: 64px;
+    
+    /* Footer */
+    --footer-height: auto;
+    
+    /* ============================================
+       COMPONENTES ESPECÍFICOS
+       ============================================ */
+    
+    /* Botones */
+    --btn-padding: 0.75rem 1.5rem;
+    --btn-padding-sm: 0.5rem 1rem;
+    --btn-padding-lg: 1rem 2rem;
+    
+    /* Cards */
+    --card-padding: var(--space-6);
+    --card-radius: var(--radius-lg);
+    
+    /* Inputs */
+    --input-height: 2.75rem;
+    --input-padding: 0.75rem 1rem;
+    --input-border: 1px solid var(--gray-300);
+    --input-focus-border: var(--secondary);
+    
+    /* Overlay */
+    --overlay-bg: rgba(0, 0, 0, 0.5);
+    
+    /* ============================================
+       EFECTOS Y ANIMACIONES
+       ============================================ */
+    
+    /* Blur */
+    --blur-sm: 4px;
+    --blur: 8px;
+    --blur-lg: 16px;
+    --blur-xl: 24px;
+    
+    /* Brightness */
+    --brightness-hover: brightness(1.1);
+    
+    /* Scale */
+    --scale-hover: scale(1.05);
+    --scale-active: scale(0.95);
+
+    /* ============================================
+       ALIASES (compatibilidad --color-*)
+       ============================================ */
+    
+    --color-primary: var(--primary);
+    --color-primary-dark: var(--primary-dark);
+    --color-primary-light: var(--primary-light);
+    --color-secondary: var(--secondary);
+    --color-secondary-light: var(--secondary-light);
+    --color-accent: var(--accent);
+    --color-accent-hover: var(--accent-hover);
+    --color-accent-light: var(--secondary-lighter);
+    
+    --color-success: var(--success);
+    --color-success-light: #dcfce7;
+    --color-warning: var(--warning);
+    --color-error: var(--error);
+    --color-error-light: #fee2e2;
+    --color-info: var(--info);
+    --color-info-light: #dbeafe;
+    
+    --color-gray-100: var(--gray-100);
+    --color-gray-200: var(--gray-200);
+    --color-gray-300: var(--gray-300);
+    --color-gray-400: var(--gray-400);
+    --color-gray-500: var(--gray-500);
+    --color-gray-600: var(--gray-600);
+    --color-gray-700: var(--gray-700);
+    --color-gray-800: var(--gray-800);
+    --color-gray-900: var(--gray-900);
+    
+    --color-white: var(--white);
+    --color-black: var(--black);
+
+    /* Font Size aliases */
+    --font-size-xs: var(--text-xs);
+    --font-size-sm: var(--text-sm);
+    --font-size-base: var(--text-base);
+    --font-size-lg: var(--text-lg);
+    --font-size-xl: var(--text-xl);
+    --font-size-2xl: var(--text-2xl);
+    --font-size-3xl: var(--text-3xl);
+    --font-size-4xl: var(--text-4xl);
+
+    /* Spacing aliases */
+    --spacing-1: var(--space-1);
+    --spacing-2: var(--space-2);
+    --spacing-3: var(--space-3);
+    --spacing-4: var(--space-4);
+    --spacing-5: var(--space-5);
+    --spacing-6: var(--space-6);
+    --spacing-8: var(--space-8);
+    --spacing-10: var(--space-10);
+    --spacing-12: var(--space-12);
+    --spacing-16: var(--space-16);
+    --spacing-20: var(--space-20);
+
+    /* Border Radius aliases */
+    --border-radius: var(--radius);
+    --border-radius-sm: var(--radius-sm);
+    --border-radius-md: var(--radius-md);
+    --border-radius-lg: var(--radius-lg);
+    --border-radius-xl: var(--radius-xl);
+    --border-radius-full: var(--radius-full);
+
+    /* Shadow aliases */
+    --shadow-normal: var(--shadow);
+
+    /* Transition aliases */
+    --transition-normal: var(--transition-base);
+
+    /* Text color alias */
+    --text-error: var(--error);
+}
+
+/* ============================================
+   DARK MODE (Preparado para el futuro)
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* Ajustar colores para modo oscuro */
+        --bg-primary: var(--gray-900);
+        --bg-secondary: var(--gray-800);
+        /* Más colores a definir */
+    }
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+@media (max-width: 768px) {
+    :root {
+        /* Ajustar tamaños para mobile */
+        --text-4xl: 2rem;
+        --text-5xl: 2.5rem;
+        --text-6xl: 3rem;
+        
+        --section-padding: 3rem 0;
+        --navbar-height: var(--navbar-height-mobile);
+    }
+}

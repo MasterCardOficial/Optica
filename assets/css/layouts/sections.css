@@ -1,0 +1,298 @@
+/**
+ * SURTILENTES - SECTIONS
+ * Estilos para secciones de página
+ */
+
+/* ============================================
+   SECTION BASE
+   ============================================ */
+
+.section {
+    padding: var(--section-padding);
+    position: relative;
+}
+
+.section-sm {
+    padding: var(--section-padding-sm);
+}
+
+.section-lg {
+    padding: calc(var(--section-padding) * 1.5);
+}
+
+/* ============================================
+   SECTION BACKGROUNDS
+   ============================================ */
+
+.section-primary {
+    background: var(--primary);
+    color: var(--white);
+}
+
+.section-secondary {
+    background: var(--bg-secondary);
+}
+
+.section-gradient {
+    background: var(--bg-gradient);
+    color: var(--white);
+}
+
+.section-white {
+    background: var(--white);
+}
+
+/* ============================================
+   SECTION HEADER
+   ============================================ */
+
+.section-header {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto var(--space-16);
+}
+
+.section-label {
+    display: inline-block;
+    padding: var(--space-2) var(--space-4);
+    background: var(--secondary-lighter);
+    color: var(--primary);
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    margin-bottom: var(--space-4);
+}
+
+.section-title {
+    font-size: var(--text-5xl);
+    font-weight: var(--font-extrabold);
+    color: var(--primary);
+    margin-bottom: var(--space-6);
+    line-height: var(--leading-tight);
+}
+
+.section-primary .section-title,
+.section-gradient .section-title {
+    color: var(--white);
+}
+
+.section-subtitle {
+    font-size: var(--text-xl);
+    color: var(--gray-600);
+    line-height: var(--leading-relaxed);
+}
+
+.section-primary .section-subtitle,
+.section-gradient .section-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* ============================================
+   SECTION DIVIDER
+   ============================================ */
+
+.section-divider {
+    width: 80px;
+    height: 4px;
+    background: var(--accent);
+    margin: 0 auto var(--space-6);
+    border-radius: var(--radius-full);
+}
+
+/* ============================================
+   SECTION CONTENT
+   ============================================ */
+
+.section-content {
+    margin-top: var(--space-12);
+}
+
+/* ============================================
+   HERO SECTION
+   ============================================ */
+
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    background: var(--bg-gradient);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    color: var(--white);
+}
+
+.hero-title {
+    font-size: var(--text-6xl);
+    font-weight: var(--font-extrabold);
+    margin-bottom: var(--space-6);
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.hero-subtitle {
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-8);
+    opacity: 0.95;
+    animation: fadeInUp 1s ease-out 0.2s both;
+}
+
+.hero-actions {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    animation: fadeInUp 1.2s ease-out 0.4s both;
+}
+
+.hero-image {
+    position: relative;
+    animation: fadeInRight 1s ease-out 0.6s both;
+}
+
+/* Hero con imagen de fondo */
+.hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+}
+
+.hero-bg::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(10, 36, 99, 0.9) 0%, rgba(62, 146, 204, 0.8) 100%);
+}
+
+.hero-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ============================================
+   CTA SECTION
+   ============================================ */
+
+.cta-section {
+    background: var(--bg-gradient);
+    color: var(--white);
+    text-align: center;
+    padding: var(--space-20) 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+}
+
+.cta-section::after {
+    content: '';
+    position: absolute;
+    bottom: -50%;
+    left: -10%;
+    width: 500px;
+    height: 500px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+}
+
+.cta-content {
+    position: relative;
+    z-index: 1;
+}
+
+.cta-title {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-6);
+}
+
+.cta-text {
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-8);
+    opacity: 0.95;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 992px) {
+    .hero-title {
+        font-size: var(--text-5xl);
+    }
+    
+    .hero-subtitle {
+        font-size: var(--text-xl);
+    }
+    
+    .section-title {
+        font-size: var(--text-4xl);
+    }
+}
+
+@media (max-width: 768px) {
+    .section {
+        padding: var(--section-padding-sm);
+    }
+    
+    .hero {
+        min-height: auto;
+        padding: var(--space-20) 0;
+    }
+    
+    .hero-title {
+        font-size: var(--text-4xl);
+    }
+    
+    .hero-subtitle {
+        font-size: var(--text-lg);
+    }
+    
+    .hero-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .hero-actions .btn {
+        width: 100%;
+    }
+    
+    .section-header {
+        margin-bottom: var(--space-10);
+    }
+    
+    .section-title {
+        font-size: var(--text-3xl);
+    }
+    
+    .section-subtitle {
+        font-size: var(--text-base);
+    }
+    
+    .cta-title {
+        font-size: var(--text-3xl);
+    }
+    
+    .cta-text {
+        font-size: var(--text-base);
+    }
+}

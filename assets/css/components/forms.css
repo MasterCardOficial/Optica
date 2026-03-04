@@ -1,0 +1,524 @@
+/**
+ * SURTILENTES - FORMS
+ * Sistema de formularios accesible y fácil de usar
+ */
+
+/* ============================================
+   FORM CONTAINER
+   ============================================ */
+
+.form {
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: var(--space-6);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-6);
+}
+
+/* ============================================
+   LABELS
+   ============================================ */
+
+.form-label {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--gray-700);
+    margin-bottom: var(--space-2);
+}
+
+.form-label-required::after {
+    content: ' *';
+    color: var(--error);
+}
+
+.form-label-info {
+    display: block;
+    font-size: var(--text-xs);
+    color: var(--gray-600);
+    font-weight: var(--font-normal);
+    margin-top: var(--space-1);
+}
+
+/* ============================================
+   INPUTS
+   ============================================ */
+
+.form-input,
+.form-textarea,
+.form-select {
+    width: 100%;
+    height: var(--input-height);
+    padding: var(--input-padding);
+    font-size: var(--text-base);
+    font-family: var(--font-primary);
+    color: var(--gray-800);
+    background: var(--white);
+    border: var(--input-border);
+    border-radius: var(--radius);
+    transition: all var(--transition-base);
+    appearance: none;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+    border-color: var(--input-focus-border);
+    box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.1);
+    outline: none;
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+    color: var(--gray-500);
+}
+
+/* Textarea */
+.form-textarea {
+    height: auto;
+    min-height: 120px;
+    resize: vertical;
+    padding: var(--space-4);
+}
+
+/* Select */
+.form-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+    cursor: pointer;
+}
+
+/* Input con icono */
+.form-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.form-input-icon {
+    position: absolute;
+    left: var(--space-4);
+    color: var(--gray-500);
+    pointer-events: none;
+}
+
+.form-input-group .form-input {
+    padding-left: 3rem;
+}
+
+.form-input-icon-right {
+    left: auto;
+    right: var(--space-4);
+}
+
+.form-input-group .form-input.has-icon-right {
+    padding-right: 3rem;
+    padding-left: var(--input-padding);
+}
+
+/* ============================================
+   CHECKBOX Y RADIO
+   ============================================ */
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+    cursor: pointer;
+}
+
+.form-check-input {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--gray-400);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    appearance: none;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.form-check-input:checked {
+    background: var(--secondary);
+    border-color: var(--secondary);
+}
+
+.form-check-input:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--white);
+    font-size: 14px;
+    font-weight: var(--font-bold);
+}
+
+.form-check-input[type="radio"] {
+    border-radius: var(--radius-full);
+}
+
+.form-check-input[type="radio"]:checked::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: var(--white);
+    border-radius: var(--radius-full);
+}
+
+.form-check-label {
+    font-size: var(--text-base);
+    color: var(--gray-700);
+    cursor: pointer;
+}
+
+/* ============================================
+   ESTADOS DE VALIDACIÓN
+   ============================================ */
+
+.form-input.is-valid,
+.form-select.is-valid,
+.form-textarea.is-valid {
+    border-color: var(--success);
+}
+
+.form-input.is-invalid,
+.form-select.is-invalid,
+.form-textarea.is-invalid {
+    border-color: var(--error);
+}
+
+.form-feedback {
+    display: block;
+    margin-top: var(--space-2);
+    font-size: var(--text-sm);
+}
+
+.form-feedback.valid {
+    color: var(--success);
+}
+
+.form-feedback.invalid {
+    color: var(--error);
+}
+
+/* ============================================
+   FORM CARD (Para citas y formularios importantes)
+   ============================================ */
+
+.form-card {
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8);
+    box-shadow: var(--shadow-lg);
+}
+
+.form-card-header {
+    text-align: center;
+    margin-bottom: var(--space-8);
+}
+
+.form-card-title {
+    font-size: var(--text-3xl);
+    font-weight: var(--font-bold);
+    color: var(--primary);
+    margin-bottom: var(--space-3);
+}
+
+.form-card-subtitle {
+    font-size: var(--text-lg);
+    color: var(--gray-600);
+}
+
+.form-card-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--space-6);
+    background: linear-gradient(135deg, var(--secondary-lighter) 0%, var(--secondary-light) 100%);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: var(--primary);
+}
+
+/* ============================================
+   STEP FORM (Formulario paso a paso)
+   ============================================ */
+
+.form-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--space-10);
+    position: relative;
+}
+
+.form-steps::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gray-300);
+    z-index: 0;
+}
+
+.form-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    flex: 1;
+}
+
+.form-step-number {
+    width: 40px;
+    height: 40px;
+    background: var(--white);
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--font-bold);
+    color: var(--gray-500);
+    margin-bottom: var(--space-2);
+    transition: all var(--transition-base);
+}
+
+.form-step.active .form-step-number {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    color: var(--white);
+    transform: scale(1.2);
+}
+
+.form-step.completed .form-step-number {
+    background: var(--success);
+    border-color: var(--success);
+    color: var(--white);
+}
+
+.form-step.completed .form-step-number::after {
+    content: '✓';
+}
+
+.form-step-label {
+    font-size: var(--text-sm);
+    color: var(--gray-600);
+    text-align: center;
+    font-weight: var(--font-medium);
+}
+
+.form-step.active .form-step-label {
+    color: var(--secondary);
+    font-weight: var(--font-semibold);
+}
+
+.form-step-content {
+    display: none;
+}
+
+.form-step-content.active {
+    display: block;
+    animation: fadeInUp 0.3s ease-out;
+}
+
+/* ============================================
+   DATE PICKER (Selector de fecha simple)
+   ============================================ */
+
+.date-picker {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+}
+
+.date-picker-day {
+    aspect-ratio: 1;
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    background: var(--white);
+}
+
+.date-picker-day:hover:not(.disabled) {
+    border-color: var(--secondary);
+    background: var(--secondary-lighter);
+}
+
+.date-picker-day.selected {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    color: var(--white);
+}
+
+.date-picker-day.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.date-picker-day-name {
+    font-size: var(--text-xs);
+    color: var(--gray-600);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--space-1);
+}
+
+.date-picker-day.selected .date-picker-day-name {
+    color: var(--white);
+}
+
+.date-picker-day-number {
+    font-size: var(--text-lg);
+    font-weight: var(--font-bold);
+}
+
+/* ============================================
+   TIME PICKER (Selector de hora)
+   ============================================ */
+
+.time-picker {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: var(--space-3);
+}
+
+.time-picker-slot {
+    padding: var(--space-4);
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    background: var(--white);
+}
+
+.time-picker-slot:hover:not(.disabled) {
+    border-color: var(--secondary);
+    background: var(--secondary-lighter);
+}
+
+.time-picker-slot.selected {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--white);
+}
+
+.time-picker-slot.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    text-decoration: line-through;
+}
+
+.time-picker-time {
+    font-size: var(--text-lg);
+    font-weight: var(--font-bold);
+    display: block;
+    margin-bottom: var(--space-1);
+}
+
+.time-picker-label {
+    font-size: var(--text-xs);
+    color: var(--gray-600);
+}
+
+.time-picker-slot.selected .time-picker-label {
+    color: var(--white);
+}
+
+/* ============================================
+   FORM ACTIONS
+   ============================================ */
+
+.form-actions {
+    display: flex;
+    gap: var(--space-4);
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--gray-200);
+}
+
+.form-actions.centered {
+    justify-content: center;
+}
+
+.form-actions.space-between {
+    justify-content: space-between;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .form-card {
+        padding: var(--space-6);
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-steps {
+        flex-wrap: wrap;
+    }
+    
+    .form-step {
+        flex-basis: 50%;
+        margin-bottom: var(--space-4);
+    }
+    
+    .date-picker {
+        grid-template-columns: repeat(7, 1fr);
+        gap: var(--space-1);
+    }
+    
+    .time-picker {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+    
+    .form-actions .btn {
+        width: 100%;
+    }
+}
+
+/* ============================================
+   ANIMACIONES
+   ============================================ */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

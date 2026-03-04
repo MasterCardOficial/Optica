@@ -1,0 +1,7 @@
+# Dependencias para el sistema de envío de emails
+# Instalar con: pip install -r requirements.txt
+
+gspread==6.0.0
+google-auth==2.27.0
+google-auth-oauthlib==1.2.0
+google-auth-httplib2==0.2.0

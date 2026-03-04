@@ -1,0 +1,2019 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Agenda tu cita en Surtilentes - Sistema profesional de reservas">
+  <title>Agendar Cita - Surtilentes Óptica</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <link rel="stylesheet" href="../assets/css/index.css">
+  <link rel="shortcut icon" href="../assets/images/products/logo.jpg" type="image/x-icon">
+
+  <style>
+    /* ===== ESTILOS ESPECÍFICOS DE AGENDAR CITA ===== */
+    .appointment-page {
+      padding-top: 30px;
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--light) 0%, #ffffff 50%);
+    }
+
+    .appointment-header {
+      text-align: center;
+      padding: 40px 0 20px;
+    }
+
+    .appointment-header h1 {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .appointment-header p {
+      color: #555;
+      font-size: 1.1rem;
+    }
+
+    /* Barra de progreso */
+    .progress-bar-steps {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0;
+      margin: 30px auto;
+      max-width: 800px;
+      flex-wrap: wrap;
+    }
+
+    .progress-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .progress-step__number {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      color: #777;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      border: 3px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-step__number::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s ease, height 0.6s ease;
+    }
+
+    .progress-step.active .progress-step__number::before {
+      width: 100%;
+      height: 100%;
+    }
+
+    .progress-step.active .progress-step__number {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      border-color: var(--accent);
+      box-shadow: 0 4px 20px rgba(6, 182, 212, 0.5), 0 0 0 4px rgba(6, 182, 212, 0.1);
+      transform: scale(1.15);
+    }
+
+    .progress-step.completed .progress-step__number {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+      box-shadow: 0 2px 10px rgba(6, 182, 212, 0.3);
+      transform: scale(1);
+    }
+
+    .progress-step__label {
+      font-size: 0.75rem;
+      margin-top: 6px;
+      color: #888;
+      font-weight: 500;
+      text-align: center;
+      max-width: 80px;
+      transition: all 0.3s ease;
+    }
+
+    .progress-step.active .progress-step__label {
+      color: var(--primary);
+      font-weight: 700;
+      transform: scale(1.05);
+    }
+
+    .progress-step.completed .progress-step__label {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .progress-divider {
+      width: 40px;
+      height: 3px;
+      background: #e0e0e0;
+      margin: 0 5px;
+      margin-bottom: 20px;
+      position: relative;
+      transition: all 0.5s ease;
+      overflow: hidden;
+    }
+
+    .progress-divider::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      transition: left 0.8s ease;
+    }
+
+    .progress-divider.completed {
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(6, 182, 212, 0.4);
+    }
+
+    .progress-divider.completed::before {
+      left: 100%;
+    }
+
+    /* Card del formulario */
+    .form-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      padding: 35px 40px;
+      margin-bottom: 30px;
+      max-width: 720px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .step-content {
+      display: none;
+      opacity: 0;
+      transform: translateY(30px) scale(0.96);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .step-content.active {
+      display: block;
+      animation: slideInFromTop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .step-content.exiting {
+      animation: slideOutToTop 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
+    }
+
+    @keyframes slideInFromTop {
+      0% {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes slideOutToTop {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-15px) scale(0.97);
+      }
+    }
+
+    /* Animación para elementos individuales */
+    .form-group {
+      animation: fadeInElement 0.4s ease-out backwards;
+    }
+
+    .form-group:nth-child(1) { animation-delay: 0.1s; }
+    .form-group:nth-child(2) { animation-delay: 0.15s; }
+    .form-group:nth-child(3) { animation-delay: 0.2s; }
+    .form-group:nth-child(4) { animation-delay: 0.25s; }
+    .form-group:nth-child(5) { animation-delay: 0.3s; }
+    .form-group:nth-child(6) { animation-delay: 0.35s; }
+    .form-group:nth-child(7) { animation-delay: 0.4s; }
+    .form-group:nth-child(8) { animation-delay: 0.45s; }
+
+    @keyframes fadeInElement {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Animaciones para progress steps */
+    @keyframes bounceIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.3);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.15);
+      }
+      70% {
+        transform: scale(0.9);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .step-title {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .step-description {
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    /* Formularios */
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    /* Campo válido (verde) */
+    .form-group--valid .form-input,
+    .form-group--valid .form-textarea,
+    .form-group--valid .form-select {
+      border-color: #28a745;
+      background: #f0fff4;
+      padding-right: 45px; /* Espacio para el checkmark */
+    }
+
+    .form-group--valid .form-input:focus,
+    .form-group--valid .form-textarea:focus,
+    .form-group--valid .form-select:focus {
+      border-color: #28a745;
+      box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.15);
+    }
+
+    .form-group--valid::after {
+      content: '✓';
+      position: absolute;
+      right: 15px;
+      top: 38px;
+      color: #28a745;
+      font-size: 1.3rem;
+      font-weight: bold;
+      animation: checkmarkPop 0.3s ease;
+      pointer-events: none;
+    }
+
+    /* Campo inválido (rojo) */
+    .form-group--invalid .form-input,
+    .form-group--invalid .form-textarea,
+    .form-group--invalid .form-select {
+      border-color: #e63946;
+      background: #fff5f5;
+      padding-right: 45px; /* Espacio para la X */
+    }
+
+    .form-group--invalid .form-input:focus,
+    .form-group--invalid .form-textarea:focus,
+    .form-group--invalid .form-select:focus {
+      border-color: #e63946;
+      box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.15);
+    }
+
+    .form-group--invalid .form-feedback--invalid {
+      display: block;
+      animation: slideDown 0.3s ease;
+    }
+
+    .form-group--invalid::after {
+      content: '✗';
+      position: absolute;
+      right: 15px;
+      top: 38px;
+      color: #e63946;
+      font-size: 1.3rem;
+      font-weight: bold;
+      animation: shakeSlight 0.3s ease;
+      pointer-events: none;
+    }
+
+    @keyframes checkmarkPop {
+      0% { transform: scale(0); opacity: 0; }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes shakeSlight {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-3px); }
+      75% { transform: translateX(3px); }
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .form-input,
+    .form-textarea,
+    .form-select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+      background: white;
+      color: #1a1a1a;
+      caret-color: #1a1a1a;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus,
+    .form-select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
+      outline: none;
+    }
+
+    .form-hint {
+      font-size: 0.85rem;
+      color: #888;
+      margin-top: 4px;
+      display: block;
+    }
+
+    .form-feedback--invalid {
+      font-size: 0.85rem;
+      color: #e63946;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .text-error {
+      color: #e63946;
+    }
+
+    /* Radio buttons personalizados */
+    .form-radio-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .form-radio {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.9rem;
+      background: white;
+    }
+
+    .form-radio:hover {
+      border-color: var(--accent);
+      background: var(--light);
+    }
+
+    .form-radio input[type="radio"] {
+      accent-color: var(--accent);
+      width: 18px;
+      height: 18px;
+    }
+
+    .form-radio input[type="radio"]:checked+.form-radio__checkmark+.form-radio__label {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .form-radio__checkmark {
+      display: none;
+    }
+
+    /* Services Grid */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .service-card {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 15px;
+      padding: 25px;
+      cursor: pointer;
+      transition: all 0.4s;
+      text-align: center;
+    }
+
+    .service-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .service-card.selected {
+      border-color: var(--primary);
+      background: linear-gradient(135deg, var(--light) 0%, white 100%);
+      box-shadow: 0 10px 30px rgba(30, 58, 138, 0.15);
+    }
+
+    .service-card__icon {
+      font-size: 2.5rem;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .service-card__title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .service-card__description {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 12px;
+    }
+
+    .service-card__details {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 12px;
+      border-top: 1px solid #eee;
+    }
+
+    .service-card__duration {
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    .service-card__price {
+      font-weight: bold;
+      color: var(--accent);
+      font-size: 1rem;
+    }
+
+    /* Calendario */
+    .calendar {
+      background: white;
+      border-radius: 15px;
+      border: 2px solid #e0e0e0;
+      padding: 25px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .calendar-nav-btn {
+      background: none;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 8px 15px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.3s;
+      color: var(--primary);
+    }
+
+    .calendar-nav-btn:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .calendar-month {
+      font-weight: bold;
+      color: var(--primary);
+      font-size: 1.2rem;
+    }
+
+    .calendar-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .calendar-weekday {
+      font-weight: 600;
+      color: #888;
+      padding: 8px 0;
+      font-size: 0.85rem;
+    }
+
+    .calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+
+    .calendar-day {
+      text-align: center;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 500;
+    }
+
+    .calendar-day:hover:not(.disabled):not(.empty) {
+      background: var(--light);
+      color: var(--primary);
+    }
+
+    .calendar-day.selected {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      font-weight: bold;
+    }
+
+    .calendar-day.disabled {
+      color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .calendar-day.today {
+      border: 2px solid var(--accent);
+    }
+
+    .calendar-info {
+      margin-top: 20px;
+      padding: 15px;
+      background: var(--light);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .calendar-info ul {
+      padding-left: 20px;
+      margin: 5px 0 0 0;
+    }
+
+    /* Time slots */
+    .time-slots-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .time-slot {
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 500;
+    }
+
+    .time-slot:hover:not(.occupied) {
+      border-color: var(--accent);
+      background: var(--light);
+    }
+
+    .time-slot.selected {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .time-slot.occupied {
+      background: #f0f0f0;
+      color: #bbb;
+      cursor: not-allowed;
+    }
+
+    .selected-date-display {
+      background: var(--light);
+      border-radius: 10px;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .selected-date-display__label {
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .selected-date-display__value {
+      color: #555;
+    }
+
+    /* Confirmación */
+    .confirmation-container {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .confirmation-icon {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      font-size: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+      animation: scaleIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    @keyframes scaleIn {
+      0% {
+        opacity: 0;
+        transform: scale(0);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .confirmation-title {
+      color: var(--primary);
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      animation: fadeInUp 0.6s ease-out 0.2s backwards;
+    }
+
+    .confirmation-message {
+      color: #64748b;
+      margin-bottom: 30px;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      animation: fadeInUp 0.6s ease-out 0.3s backwards;
+    }
+
+    .appointment-summary {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border-radius: 16px;
+      padding: 28px;
+      text-align: left;
+      margin-bottom: 25px;
+      border: 2px solid #e2e8f0;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      animation: fadeInUp 0.6s ease-out 0.4s backwards;
+    }
+
+    .appointment-summary h3 {
+      position: relative;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    .appointment-summary h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      border-radius: 2px;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 15px;
+      border-bottom: 1px solid #e2e8f0;
+      transition: all 0.3s ease;
+      border-radius: 8px;
+    }
+
+    .summary-item:hover {
+      background: white;
+      transform: translateX(5px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .summary-item:last-child {
+      border-bottom: none;
+    }
+
+    .summary-item__label {
+      font-weight: 600;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .summary-item__value {
+      color: #1e293b;
+      font-weight: 700;
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+
+    .final-recommendations {
+      background: linear-gradient(135deg, #dbeafe 0%, #e0f2fe 100%);
+      border: 2px solid #0ea5e9;
+      border-radius: 12px;
+      padding: 22px 25px;
+      margin-bottom: 25px;
+      text-align: left;
+      box-shadow: 0 4px 15px rgba(14, 165, 233, 0.15);
+      animation: fadeInUp 0.6s ease-out 0.5s backwards;
+    }
+
+    .final-recommendations h4 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #0c4a6e;
+      font-weight: 700;
+    }
+
+    .recommendations-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .recommendations-list li {
+      padding: 8px 0 8px 28px;
+      position: relative;
+      color: #0c4a6e;
+      font-weight: 500;
+    }
+
+    .recommendations-list li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #0ea5e9;
+      font-weight: bold;
+      font-size: 1.1rem;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #0ea5e9;
+    }
+
+    .recommendations-box {
+      background: linear-gradient(135deg, #e0f2fe 0%, white 100%);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 15px 15px 0;
+      padding: 20px 25px;
+      margin-top: 20px;
+    }
+
+    .recommendations-box__title {
+      color: var(--primary);
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .appointment-actions {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 25px;
+      flex-wrap: wrap;
+    }
+
+    .appointment-actions .btn {
+      min-width: 150px;
+    }
+
+    .btn--primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn--primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(30, 58, 138, 0.3);
+    }
+
+    /* Botón Confirmar Cita - Estilo especial */
+    .btn--accent {
+      background: linear-gradient(135deg, #06b6d4 0%, #0891b2 50%, #0e7490 100%);
+      color: white;
+      border: none;
+      padding: 14px 35px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(6, 182, 212, 0.4), 0 0 0 0 rgba(6, 182, 212, 0.5);
+      animation: pulseGlow 2s infinite;
+    }
+
+    .btn--accent::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s ease, height 0.6s ease;
+    }
+
+    .btn--accent:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .btn--accent:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 30px rgba(6, 182, 212, 0.6), 0 0 0 8px rgba(6, 182, 212, 0.1);
+      animation: none;
+    }
+
+    .btn--accent:active {
+      transform: translateY(-1px) scale(1.02);
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% {
+        box-shadow: 0 4px 20px rgba(6, 182, 212, 0.4), 0 0 0 0 rgba(6, 182, 212, 0.5);
+      }
+      50% {
+        box-shadow: 0 4px 25px rgba(6, 182, 212, 0.6), 0 0 0 6px rgba(6, 182, 212, 0.2);
+      }
+    }
+
+    .btn--outline {
+      background: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn--outline:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn--secondary {
+      background: linear-gradient(135deg, var(--accent) 0%, #06b6d4 100%);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+
+    .btn--secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(6, 182, 212, 0.3);
+      color: white;
+    }
+
+    .btn--next,
+    .btn--back {
+      padding: 12px 40px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
+      width: auto;
+    }
+
+    .confirmation-note {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border-radius: 12px;
+      padding: 22px 25px;
+      margin-top: 20px;
+      color: #78350f;
+      border: 2px solid #f59e0b;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
+      animation: fadeInUp 0.6s ease-out 0.6s backwards;
+    }
+
+    .confirmation-note p {
+      margin: 8px 0;
+      line-height: 1.6;
+    }
+
+    .confirmation-note strong {
+      color: #92400e;
+      font-weight: 700;
+    }
+
+    .help-box {
+      text-align: center;
+      margin-top: 30px;
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      max-width: 720px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .appointment-header {
+      max-width: 720px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    @media (max-width: 768px) {
+      .appointment-header h1 {
+        font-size: 1.8rem;
+      }
+
+      .form-card {
+        padding: 25px;
+      }
+
+      .services-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-radio-group {
+        flex-direction: column;
+      }
+
+      .appointment-actions {
+        flex-direction: column;
+      }
+
+      .summary-item {
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-start;
+      }
+
+      .progress-bar-steps {
+        gap: 0;
+      }
+
+      .progress-step__label {
+        font-size: 0.65rem;
+        max-width: 60px;
+      }
+
+      .progress-divider {
+        width: 20px;
+      }
+    }
+
+    @media print {
+      /* Ocultar todo excepto el resumen de confirmación */
+      body * {
+        visibility: hidden;
+      }
+
+      /* Solo mostrar la confirmación */
+      .step-content[data-step="6"],
+      .step-content[data-step="6"] * {
+        visibility: visible;
+      }
+
+      /* Ocultar elementos innecesarios */
+      .navbar,
+      footer,
+      .progress-bar-steps,
+      #navigationButtons,
+      .help-box,
+      .appointment-header,
+      .appointment-actions,
+      .confirmation-note,
+      .btn,
+      button {
+        display: none !important;
+      }
+
+      /* Optimizar para UNA SOLA PÁGINA */
+      * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        color-adjust: exact;
+      }
+
+      html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      .appointment-page {
+        padding: 0;
+        background: white;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .form-card {
+        box-shadow: none;
+        border: 3px solid #1e3a8a;
+        border-radius: 8px;
+        padding: 15px 18px;
+        margin: 0;
+        max-width: 100%;
+        height: 100%;
+        page-break-inside: avoid;
+        background: linear-gradient(to bottom, #ffffff 0%, #f8fafc 100%);
+      }
+
+      .step-content[data-step="6"] {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .confirmation-container {
+        page-break-inside: avoid;
+        width: 100%;
+        max-height: 100%;
+        overflow: hidden;
+      }
+
+      /* Icono y título más compactos */
+      .confirmation-icon {
+        font-size: 2rem !important;
+        width: 50px !important;
+        height: 50px !important;
+        margin: 0 auto 8px !important;
+        background: linear-gradient(135deg, #10b981, #059669) !important;
+        color: white !important;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+      }
+
+      .confirmation-title {
+        font-size: 1.4rem !important;
+        margin-top: 0 !important;
+        margin-bottom: 6px !important;
+        color: #1e3a8a !important;
+        text-align: center;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+      }
+
+      .confirmation-message {
+        font-size: 0.75rem !important;
+        margin-bottom: 10px !important;
+        color: #475569 !important;
+        text-align: center;
+        line-height: 1.3;
+      }
+
+      /* Resumen más compacto */
+      .appointment-summary {
+        margin-bottom: 10px !important;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 10px !important;
+        background: white;
+      }
+
+      .appointment-summary h3 {
+        font-size: 1rem !important;
+        margin-bottom: 8px !important;
+        color: #1e3a8a !important;
+        text-align: center;
+        font-weight: 700;
+        border-bottom: 2px solid #06b6d4;
+        padding-bottom: 5px;
+      }
+
+      .summary-item {
+        padding: 3px 8px !important;
+        font-size: 0.7rem !important;
+        display: grid !important;
+        grid-template-columns: 140px 1fr !important;
+        gap: 8px !important;
+        border-bottom: 1px solid #f1f5f9;
+      }
+
+      .summary-item:last-child {
+        border-bottom: none;
+      }
+
+      .summary-item__label {
+        font-weight: 600 !important;
+        color: #475569 !important;
+      }
+
+      .summary-item__value {
+        color: #1e293b !important;
+        font-weight: 500 !important;
+      }
+
+      /* Instrucciones de llegada más compactas */
+      .step-content[data-step="6"] > div > div[style*="background: linear-gradient(135deg, #fff9c4"] {
+        background: linear-gradient(135deg, #fef3c7, #fde68a) !important;
+        padding: 8px 10px !important;
+        margin: 8px 0 !important;
+        border: 2px solid #f59e0b !important;
+        border-radius: 6px !important;
+        page-break-inside: avoid;
+        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
+      }
+
+      .step-content[data-step="6"] > div > div[style*="background: linear-gradient(135deg, #fff9c4"] h4 {
+        font-size: 0.85rem !important;
+        margin-bottom: 6px !important;
+        color: #92400e !important;
+        font-weight: 700 !important;
+      }
+
+      .step-content[data-step="6"] > div > div[style*="background: linear-gradient(135deg, #fff9c4"] h4 span:first-child {
+        font-size: 1.2rem !important;
+      }
+
+      .step-content[data-step="6"] > div > div[style*="background: linear-gradient(135deg, #fff9c4"] p {
+        font-size: 0.65rem !important;
+        margin: 0 !important;
+        line-height: 1.2 !important;
+        color: #78350f !important;
+      }
+
+      .step-content[data-step="6"] > div > div[style*="background: linear-gradient(135deg, #fff9c4"] p span:first-child {
+        font-size: 1rem !important;
+      }
+
+      .step-content[data-step="6"] > div > div[style*="background: linear-gradient(135deg, #fff9c4"] > div {
+        gap: 6px !important;
+      }
+
+      /* Recomendaciones finales compactas */
+      .final-recommendations {
+        margin-top: 8px !important;
+        margin-bottom: 0 !important;
+        background: #f0f9ff;
+        padding: 8px 10px !important;
+        border-radius: 6px;
+        border: 2px solid #0ea5e9;
+      }
+
+      .final-recommendations h4 {
+        font-size: 0.85rem !important;
+        margin-bottom: 5px !important;
+        color: #075985 !important;
+        font-weight: 700 !important;
+      }
+
+      .recommendations-list {
+        font-size: 0.65rem !important;
+        margin: 0 !important;
+        padding-left: 15px !important;
+        line-height: 1.3 !important;
+      }
+
+      .recommendations-list li {
+        margin-bottom: 2px !important;
+        color: #0c4a6e !important;
+      }
+
+      /* Forzar TODO en una sola página */
+      @page {
+        size: letter portrait;
+        margin: 0.4cm 0.6cm;
+      }
+
+      /* Logo/Marca en la impresión */
+      .confirmation-container::before {
+        content: 'SURTILENTES ÓPTICA';
+        display: block;
+        text-align: center;
+        font-size: 0.7rem;
+        color: #94a3b8;
+        margin-bottom: 5px;
+        font-weight: 600;
+        letter-spacing: 2px;
+      }
+
+      .confirmation-container::after {
+        content: 'Fecha de impresión: ' attr(data-print-date);
+        display: block;
+        text-align: center;
+        font-size: 0.6rem;
+        color: #cbd5e1;
+        margin-top: 8px;
+        font-style: italic;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="../index.html#inicio">
+        <i class="fas fa-glasses"></i>Surtilentes
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="../index.html#inicio">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="../index.html#catalogo">Catálogo</a></li>
+          <li class="nav-item"><a class="nav-link" href="../index.html#nosotros">Nosotros</a></li>
+          <li class="nav-item"><a class="nav-link" href="../index.html#contacto">Contacto</a></li>
+          <li class="nav-item"><a class="nav-link btn-agendar-nav active" href="agendar-cita.html"><i
+                class="fas fa-calendar-check me-1"></i>Agendar Cita</a></li>
+          <li class="nav-item"><a class="nav-link" href="consultar-citas.html"><i
+                class="fas fa-search me-1"></i>Consultar Citas</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Appointment Page -->
+  <div class="appointment-page">
+    <div class="container">
+
+      <div class="appointment-header animate__animated animate__fadeIn">
+        <h1><i class="fas fa-calendar-alt me-2" style="color: var(--accent);"></i>Sistema de Agendamiento de Citas</h1>
+        <p>Complete el formulario paso a paso. Primero registre sus datos personales, luego seleccione fecha y hora.</p>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-bar-steps animate__animated animate__fadeInUp">
+        <div class="progress-step active" data-step="1">
+          <div class="progress-step__number">1</div>
+          <span class="progress-step__label">Datos Personales</span>
+        </div>
+        <div class="progress-divider"></div>
+        <div class="progress-step" data-step="2">
+          <div class="progress-step__number">2</div>
+          <span class="progress-step__label">Servicio</span>
+        </div>
+        <div class="progress-divider"></div>
+        <div class="progress-step" data-step="3">
+          <div class="progress-step__number">3</div>
+          <span class="progress-step__label">Info Médica</span>
+        </div>
+        <div class="progress-divider"></div>
+        <div class="progress-step" data-step="4">
+          <div class="progress-step__number">4</div>
+          <span class="progress-step__label">Fecha</span>
+        </div>
+        <div class="progress-divider"></div>
+        <div class="progress-step" data-step="5">
+          <div class="progress-step__number">5</div>
+          <span class="progress-step__label">Hora</span>
+        </div>
+        <div class="progress-divider"></div>
+        <div class="progress-step" data-step="6">
+          <div class="progress-step__number">6</div>
+          <span class="progress-step__label">Confirmación</span>
+        </div>
+      </div>
+
+      <!-- Form Card -->
+      <div class="form-card animate__animated animate__fadeInUp">
+
+        <!-- PASO 1: DATOS PERSONALES -->
+        <div class="step-content active" data-step="1">
+          <h2 class="step-title">📋 Datos Personales</h2>
+          <p class="step-description">Por favor ingrese sus datos para identificarlo en nuestro sistema</p>
+          <form class="personal-info-form" id="personalInfoForm">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="documentType" class="form-label">Tipo de Documento <span
+                      class="text-error">*</span></label>
+                  <select id="documentType" name="documentType" class="form-input" required>
+                    <option value="">Seleccione...</option>
+                    <option value="CC">Cédula de Ciudadanía</option>
+                    <option value="CE">Cédula de Extranjería</option>
+                    <option value="TI">Tarjeta de Identidad</option>
+                    <option value="PA">Pasaporte</option>
+                  </select>
+                  <div class="form-feedback form-feedback--invalid">Por favor seleccione el tipo de documento</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="documentNumber" class="form-label">Número de Documento <span
+                      class="text-error">*</span></label>
+                  <input type="tel" id="documentNumber" name="documentNumber" class="form-input"
+                    placeholder="Ej: 1234567890" maxlength="10" inputmode="numeric" pattern="[0-9]{6,10}" required>
+                  <div class="form-feedback form-feedback--invalid">Por favor ingrese su número de documento</div>
+                  <small class="form-hint">Solo números, máximo 10 dígitos. Le permitirá consultar sus citas.</small>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="fullName" class="form-label">Nombre Completo <span class="text-error">*</span></label>
+              <input type="text" id="fullName" name="fullName" class="form-input" placeholder="Ej: Juan Pérez García"
+                required>
+              <div class="form-feedback form-feedback--invalid">Por favor ingrese su nombre completo</div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="birthDate" class="form-label">Fecha de Nacimiento <span
+                      class="text-error">*</span></label>
+                  <input type="date" id="birthDate" name="birthDate" class="form-input" required>
+                  <div class="form-feedback form-feedback--invalid">Por favor ingrese su fecha de nacimiento</div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="phone" class="form-label">Teléfono / Celular <span class="text-error">*</span></label>
+                  <input type="tel" id="phone" name="phone" class="form-input" placeholder="Ej: 3001234567"
+                    maxlength="10" inputmode="numeric" required>
+                  <div class="form-feedback form-feedback--invalid">Por favor ingrese un número de teléfono válido</div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="email" class="form-label">Correo Electrónico <span class="text-error">*</span></label>
+              <input type="email" id="email" name="email" class="form-input" placeholder="Ej: correo@ejemplo.com"
+                required>
+              <div class="form-feedback form-feedback--invalid">Por favor ingrese un correo electrónico válido</div>
+              <small class="form-hint">Le enviaremos la confirmación de su cita a este correo</small>
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <div class="form-group">
+                  <label for="address" class="form-label">Dirección</label>
+                  <input type="text" id="address" name="address" class="form-input" placeholder="Ej: Calle 123 #45-67">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="city" class="form-label">Ciudad <span class="text-error">*</span></label>
+                  <input type="text" id="city" name="city" class="form-input" placeholder="Ej: Bogotá" value="Bogotá"
+                    required>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- PASO 2: SELECCIÓN DE SERVICIO -->
+        <div class="step-content" data-step="2">
+          <h2 class="step-title">🔍 Seleccione el Servicio</h2>
+          <p class="step-description">¿Qué servicio necesita? Elija una opción</p>
+          <div class="services-grid">
+            <div class="service-card" data-service="examen-visual" data-duration="30 min" data-price="$50,000">
+              <span class="service-card__icon">👁️</span>
+              <h3 class="service-card__title">Examen Visual Completo</h3>
+              <p class="service-card__description">Evaluación completa de su salud visual, medición de graduación y
+                revisión.</p>
+              <div class="service-card__details">
+                <span class="service-card__duration">⏱️ 30 min</span>
+                <span class="service-card__price">$50,000</span>
+              </div>
+            </div>
+            <div class="service-card" data-service="lentes-contacto" data-duration="25 min" data-price="$30,000">
+              <span class="service-card__icon">🔍</span>
+              <h3 class="service-card__title">Adaptación Lentes de Contacto</h3>
+              <p class="service-card__description">Asesoría y adaptación personalizada de lentes de contacto.</p>
+              <div class="service-card__details">
+                <span class="service-card__duration">⏱️ 25 min</span>
+                <span class="service-card__price">$30,000</span>
+              </div>
+            </div>
+            <div class="service-card" data-service="ajuste-monturas" data-duration="15 min" data-price="Gratis">
+              <span class="service-card__icon">🔧</span>
+              <h3 class="service-card__title">Ajuste de Monturas</h3>
+              <p class="service-card__description">Ajuste profesional de sus gafas para máxima comodidad.</p>
+              <div class="service-card__details">
+                <span class="service-card__duration">⏱️ 15 min</span>
+                <span class="service-card__price">Gratis</span>
+              </div>
+            </div>
+            <div class="service-card" data-service="reparacion" data-duration="20 min" data-price="Variable">
+              <span class="service-card__icon">🛠️</span>
+              <h3 class="service-card__title">Reparación de Gafas</h3>
+              <p class="service-card__description">Cambio de varillas, soldadura, reemplazo de piezas.</p>
+              <div class="service-card__details">
+                <span class="service-card__duration">⏱️ 20 min</span>
+                <span class="service-card__price">Variable</span>
+              </div>
+            </div>
+            <div class="service-card" data-service="control-vision" data-duration="20 min" data-price="Gratis">
+              <span class="service-card__icon">📋</span>
+              <h3 class="service-card__title">Control de Visión</h3>
+              <p class="service-card__description">Revisión periódica de su salud visual (pacientes registrados).</p>
+              <div class="service-card__details">
+                <span class="service-card__duration">⏱️ 20 min</span>
+                <span class="service-card__price">Gratis</span>
+              </div>
+            </div>
+            <div class="service-card" data-service="asesoria" data-duration="15 min" data-price="Gratis">
+              <span class="service-card__icon">💬</span>
+              <h3 class="service-card__title">Asesoría de Monturas</h3>
+              <p class="service-card__description">Le ayudamos a elegir la montura perfecta para usted.</p>
+              <div class="service-card__details">
+                <span class="service-card__duration">⏱️ 15 min</span>
+                <span class="service-card__price">Gratis</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PASO 3: INFORMACIÓN MÉDICA -->
+        <div class="step-content" data-step="3">
+          <h2 class="step-title">🩺 Información Médica</h2>
+          <p class="step-description">Responda las siguientes preguntas para brindarle un mejor servicio</p>
+          <form class="medical-info-form" id="medicalInfoForm">
+            <div class="form-group">
+              <label class="form-label">¿Es su primera vez en Surtilentes? <span class="text-error">*</span></label>
+              <div class="form-radio-group">
+                <label class="form-radio"><input type="radio" name="firstTime" value="si" required><span
+                    class="form-radio__checkmark"></span><span class="form-radio__label">Sí, es mi primera
+                    vez</span></label>
+                <label class="form-radio"><input type="radio" name="firstTime" value="no"><span
+                    class="form-radio__checkmark"></span><span class="form-radio__label">No, ya he venido
+                    antes</span></label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">¿Actualmente usa gafas o lentes de contacto? <span
+                  class="text-error">*</span></label>
+              <div class="form-radio-group">
+                <label class="form-radio"><input type="radio" name="usesGlasses" value="gafas" required><span
+                    class="form-radio__checkmark"></span><span class="form-radio__label">Sí, uso gafas</span></label>
+                <label class="form-radio"><input type="radio" name="usesGlasses" value="lentes"><span
+                    class="form-radio__checkmark"></span><span class="form-radio__label">Sí, uso lentes de
+                    contacto</span></label>
+                <label class="form-radio"><input type="radio" name="usesGlasses" value="ambos"><span
+                    class="form-radio__checkmark"></span><span class="form-radio__label">Uso ambos</span></label>
+                <label class="form-radio"><input type="radio" name="usesGlasses" value="no"><span
+                    class="form-radio__checkmark"></span><span class="form-radio__label">No uso nada</span></label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">¿Tiene una fórmula anterior o receta médica? <span
+                  class="text-error">*</span></label>
+              <div class="form-radio-group">
+                <label class="form-radio"><input type="radio" name="hasOldPrescription" value="si" required><span
+                    class="form-radio__checkmark"></span><span class="form-radio__label">Sí, tengo mi fórmula
+                    anterior</span></label>
+                <label class="form-radio"><input type="radio" name="hasOldPrescription" value="no"><span
+                    class="form-radio__checkmark"></span><span class="form-radio__label">No tengo fórmula</span></label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="mainReason" class="form-label">Motivo Principal de su Visita <span
+                  class="text-error">*</span></label>
+              <select id="mainReason" name="mainReason" class="form-input" required>
+                <option value="">Seleccione...</option>
+                <option value="examen-rutina">Examen de rutina / Revisión</option>
+                <option value="problemas-vision">Problemas de visión (no veo bien)</option>
+                <option value="dolor-molestias">Dolor o molestias en los ojos</option>
+                <option value="comprar-gafas">Quiero comprar gafas nuevas</option>
+                <option value="cambiar-lentes">Cambiar o renovar lentes de contacto</option>
+                <option value="segunda-opinion">Segunda opinión médica</option>
+                <option value="otro">Otro motivo</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="medicalNotes" class="form-label">Información Adicional (Síntomas, preguntas,
+                comentarios)</label>
+              <textarea id="medicalNotes" name="medicalNotes" class="form-textarea" rows="4"
+                placeholder="Ejemplo: He notado visión borrosa al leer, tengo dolores de cabeza frecuentes, etc."></textarea>
+            </div>
+            <div class="recommendations-box" id="recommendationsBox" style="display: none;">
+              <h4 class="recommendations-box__title">📌 Recomendaciones para su Cita</h4>
+              <div class="recommendations-box__content" id="recommendationsContent"></div>
+            </div>
+          </form>
+        </div>
+
+        <!-- PASO 4: SELECCIÓN DE FECHA -->
+        <div class="step-content" data-step="4">
+          <h2 class="step-title">📅 Seleccione la Fecha</h2>
+          <p class="step-description">Elija el día que mejor le convenga para su cita</p>
+          <div class="date-picker-container">
+            <div class="calendar">
+              <div class="calendar-header">
+                <button class="calendar-nav-btn" id="prevMonth" type="button" aria-label="Mes anterior">←</button>
+                <div class="calendar-month" id="currentMonth"></div>
+                <button class="calendar-nav-btn" id="nextMonth" type="button" aria-label="Mes siguiente">→</button>
+              </div>
+              <div class="calendar-weekdays">
+                <div class="calendar-weekday">Dom</div>
+                <div class="calendar-weekday">Lun</div>
+                <div class="calendar-weekday">Mar</div>
+                <div class="calendar-weekday">Mié</div>
+                <div class="calendar-weekday">Jue</div>
+                <div class="calendar-weekday">Vie</div>
+                <div class="calendar-weekday">Sáb</div>
+              </div>
+              <div class="calendar-days" id="calendarDays"></div>
+            </div>
+            <div class="calendar-info">
+              <p><strong>Horario de atención:</strong></p>
+              <ul>
+                <li>Lunes a Viernes: 9:00 AM - 6:00 PM</li>
+                <li>Sábados: 9:00 AM - 2:00 PM</li>
+                <li>Domingos: Cerrado</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- PASO 5: INFORMACIÓN DE ATENCIÓN -->
+        <div class="step-content" data-step="5">
+          <h2 class="step-title">⏰ Información de Atención</h2>
+          <p class="step-description">Le atenderemos por orden de llegada</p>
+          
+          <div class="time-slots-container">
+            <div class="selected-date-display">
+              <div class="selected-date-display__label">📅 Fecha seleccionada:</div>
+              <div class="selected-date-display__value" id="selectedDateDisplay"></div>
+            </div>
+            <div class="selected-date-display" style="margin-top: 1rem;">
+              <div class="selected-date-display__label">🔍 Servicio:</div>
+              <div class="selected-date-display__value" id="selectedServiceDisplay"></div>
+            </div>
+
+            <!-- Información de atención por llegada -->
+            <div class="calendar-info" style="margin-top: 3rem; background: linear-gradient(135deg, #e3f2fd, #f3e5f5); padding: 30px; border-radius: 16px; border-left: 5px solid var(--primary);">
+              <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+                <div style="background: var(--primary); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                  👋
+                </div>
+                <div>
+                  <h3 style="color: var(--primary); margin: 0; font-size: 1.5rem; font-weight: 700;">
+                    ¡Llegue Cuando Guste!
+                  </h3>
+                  <p style="color: #555; margin: 5px 0 0 0; font-size: 0.95rem;">
+                    Sistema de atención por orden de llegada
+                  </p>
+                </div>
+              </div>
+
+              <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                <h4 style="color: var(--dark); margin: 0 0 20px 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                  <i class="fas fa-info-circle" style="color: var(--accent);"></i>
+                  <span>¿Cómo funciona?</span>
+                </h4>
+                
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                  <div style="display: flex; align-items: start; gap: 15px;">
+                    <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; min-width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem;">1</div>
+                    <div>
+                      <strong style="color: var(--dark); font-size: 1rem;">Llegue dentro del horario</strong>
+                      <p style="color: #666; margin: 5px 0 0 0; font-size: 0.9rem;">Puede venir en cualquier momento durante nuestro horario de atención</p>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; align-items: start; gap: 15px;">
+                    <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; min-width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem;">2</div>
+                    <div>
+                      <strong style="color: var(--dark); font-size: 1rem;">Repórtese con la secretaria</strong>
+                      <p style="color: #666; margin: 5px 0 0 0; font-size: 0.9rem;">Al llegar, diríjase a recepción y presente su número de documento</p>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; align-items: start; gap: 15px;">
+                    <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; min-width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem;">3</div>
+                    <div>
+                      <strong style="color: var(--dark); font-size: 1rem;">Le atendemos en orden de llegada</strong>
+                      <p style="color: #666; margin: 5px 0 0 0; font-size: 0.9rem;">Será atendido según el orden en que llegó. Tiempo de espera aproximado: 10-20 minutos</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Horario de atención -->
+              <div style="margin-top: 25px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                <h4 style="color: var(--dark); margin: 0 0 15px 0; display: flex; align-items: center; gap: 8px;">
+                  <i class="fas fa-clock" style="color: var(--accent);"></i>
+                  <span>Horario de Atención</span>
+                </h4>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                  <li style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; gap: 10px;">
+                    <span style="background: #e8f5e9; color: #2e7d32; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">Lunes - Viernes</span>
+                    <span style="color: #555; font-weight: 600;">9:00 AM - 6:00 PM</span>
+                  </li>
+                  <li style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; gap: 10px;">
+                    <span style="background: #fff3e0; color: #e65100; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">Sábados</span>
+                    <span style="color: #555; font-weight: 600;">9:00 AM - 2:00 PM</span>
+                  </li>
+                  <li style="padding: 10px 0; display: flex; align-items: center; gap: 10px;">
+                    <span style="background: #ffebee; color: #c62828; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">Domingos</span>
+                    <span style="color: #c62828; font-weight: 600;">Cerrado</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div style="margin-top: 20px; padding: 15px; background: #fff9c4; border-radius: 10px; border-left: 4px solid #fbc02d;">
+                <p style="margin: 0; color: #f57f17; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;">
+                  <i class="fas fa-lightbulb"></i>
+                  <strong>Consejo:</strong> Le recomendamos llegar temprano en la mañana para menor tiempo de espera
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PASO 6: CONFIRMACIÓN -->
+        <div class="step-content" data-step="6">
+          <div class="confirmation-container">
+            <div class="confirmation-icon">✓</div>
+            <h2 class="confirmation-title">¡Cita Agendada Exitosamente!</h2>
+            <p class="confirmation-message">Su cita ha sido registrada en nuestro sistema. Puede llegar en cualquier momento dentro del horario de atención y será atendido por orden de llegada. Hemos enviado un correo de confirmación con todos los detalles.</p>
+            <div class="appointment-summary">
+              <h3 style="text-align: center; color: var(--primary); margin-bottom: 1.5rem;">📋 Resumen de su Cita</h3>
+              <div class="summary-item"><span class="summary-item__label">📄 Número de Documento:</span><span
+                  class="summary-item__value" id="summaryDocument">-</span></div>
+              <div class="summary-item"><span class="summary-item__label">👤 Nombre Completo:</span><span
+                  class="summary-item__value" id="summaryName">-</span></div>
+              <div class="summary-item"><span class="summary-item__label">📞 Teléfono:</span><span
+                  class="summary-item__value" id="summaryPhone">-</span></div>
+              <div class="summary-item"><span class="summary-item__label">✉️ Email:</span><span
+                  class="summary-item__value" id="summaryEmail">-</span></div>
+              <div class="summary-item"><span class="summary-item__label">🔍 Servicio:</span><span
+                  class="summary-item__value" id="summaryService">-</span></div>
+              <div class="summary-item"><span class="summary-item__label">📅 Fecha:</span><span
+                  class="summary-item__value" id="summaryDate">-</span></div>
+              <div class="summary-item"><span class="summary-item__label">👋 Atención:</span><span
+                  class="summary-item__value" id="summaryTime">-</span></div>
+              <div class="summary-item"><span class="summary-item__label">⏱️ Duración Estimada:</span><span
+                  class="summary-item__value" id="summaryDuration">-</span></div>
+              <div class="summary-item"><span class="summary-item__label">💰 Precio:</span><span
+                  class="summary-item__value" id="summaryPrice">-</span></div>
+            </div>
+            
+            <!-- Nota importante sobre llegada -->
+            <div style="background: linear-gradient(135deg, #fff9c4, #fff59d); padding: 25px; border-radius: 12px; margin: 2rem 0; border-left: 5px solid #fbc02d; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+              <h4 style="color: #f57f17; margin: 0 0 15px 0; display: flex; align-items: center; gap: 10px; font-size: 1.15rem;">
+                <span style="font-size: 2rem;">👋</span>
+                <span>Instrucciones de Llegada</span>
+              </h4>
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <p style="margin: 0; color: #555; font-size: 1rem; display: flex; align-items: start; gap: 10px;">
+                  <span style="color: #f57f17; font-weight: 700; font-size: 1.3rem;">1.</span>
+                  <span><strong>Llegue en cualquier momento</strong> dentro del horario de atención (Lunes-Viernes 9AM-6PM, Sábados 9AM-2PM)</span>
+                </p>
+                <p style="margin: 0; color: #555; font-size: 1rem; display: flex; align-items: start; gap: 10px;">
+                  <span style="color: #f57f17; font-weight: 700; font-size: 1.3rem;">2.</span>
+                  <span><strong>Repórtese con la secretaria</strong> al llegar y presente su número de documento</span>
+                </p>
+                <p style="margin: 0; color: #555; font-size: 1rem; display: flex; align-items: start; gap: 10px;">
+                  <span style="color: #f57f17; font-weight: 700; font-size: 1.3rem;">3.</span>
+                  <span><strong>Se le atenderá por orden de llegada.</strong> Tiempo de espera aproximado: 10-20 minutos</span>
+                </p>
+              </div>
+            </div>
+
+            <!-- Mapa de Ubicación -->
+            <div style="background: linear-gradient(135deg, #e0f2fe, #bae6fd); padding: 25px; border-radius: 12px; margin: 2rem 0; border: 2px solid #0ea5e9; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+              <h4 style="color: #0c4a6e; margin: 0 0 15px 0; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 1.2rem;">
+                <i class="fas fa-map-marked-alt" style="font-size: 1.5rem;"></i>
+                <span>Cómo Llegar a SURTILENTES ÓPTICA</span>
+              </h4>
+              <div style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.15); margin-bottom: 15px;">
+                <iframe 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d125566.92943877657!2d-75.69934580273433!3d10.424229500000008!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8ef62f9e5cbd5163%3A0xed97fa68fed08570!2sOptica%20Surtilentes!5e0!3m2!1ses-419!2sco!4v1772569518477!5m2!1ses-419!2sco" 
+                  width="100%" 
+                  height="350" 
+                  style="border:0;" 
+                  allowfullscreen="" 
+                  loading="lazy" 
+                  referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+              </div>
+              <div style="text-align: center;">
+                <a href="https://www.google.com/maps/dir/?api=1&destination=Optica+Surtilentes+Cartagena" target="_blank" 
+                   style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; text-decoration: none; border-radius: 50px; font-weight: 600; font-size: 0.95rem; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3); transition: all 0.3s ease;">
+                  <i class="fas fa-directions"></i>
+                  Abrir en Google Maps
+                </a>
+              </div>
+              <p style="margin: 15px 0 0 0; color: #0c4a6e; text-align: center; font-size: 0.9rem;">
+                📍 <strong>Dirección:</strong> Carrera 9 #25-48, Centro Histórico, Cartagena de Indias
+              </p>
+            </div>
+            
+            <div class="final-recommendations" id="finalRecommendations">
+              <h4 style="color: var(--primary); margin-bottom: 1rem;">📌 Importante: Qué debe traer a su cita</h4>
+              <ul class="recommendations-list" id="finalRecommendationsList"></ul>
+            </div>
+            <div class="appointment-actions">
+              <a href="../index.html" class="btn btn--outline">← Volver al Inicio</a>
+              <a href="consultar-citas.html" class="btn btn--secondary">Ver Mis Citas</a>
+              <button class="btn btn--primary" onclick="window.print()">🖨️ Imprimir</button>
+            </div>
+            <div class="confirmation-note">
+              <p><strong>📧 Revise su correo electrónico</strong></p>
+              <p>Le hemos enviado un email a <strong id="confirmEmailDisplay">-</strong> con toda la información de su
+                cita.</p>
+              <p style="margin-top: 1rem;"><strong>🔔 Recordatorio:</strong> Le enviaremos un mensaje 24 horas antes de
+                su cita.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="appointment-actions" id="navigationButtons">
+          <button class="btn btn--outline btn--back" id="prevBtn" type="button" style="display: none;">←
+            Anterior</button>
+          <button class="btn btn--primary btn--next" id="nextBtn" type="button">Siguiente →</button>
+        </div>
+        <p style="text-align: center; margin-top: 18px; margin-bottom: 10px;">
+          <a href="consultar-citas.html"
+            style="color: var(--accent); font-weight: 500; font-size: 0.95rem; text-decoration: none; transition: all 0.3s;">
+            <i class="fas fa-search" style="margin-right: 5px;"></i>¿Ya tiene una cita? Consúltela aquí
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <div class="footer-main">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4 footer-brand">
+            <h4><i class="fas fa-glasses"></i> Surtilentes</h4>
+            <p>Tu visión, nuestra pasión. Óptica profesional con más de 10 años de experiencia en Cartagena
+              de Indias.</p>
+            <div class="footer-social">
+              <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+              <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+              <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+              <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+            </div>
+          </div>
+          <div class="col-md-2 offset-md-1 footer-links">
+            <h6>Navegación</h6>
+            <ul>
+              <li><a href="../index.html#inicio"><i class="fas fa-chevron-right"></i> Inicio</a></li>
+              <li><a href="../index.html#catalogo"><i class="fas fa-chevron-right"></i> Catálogo</a></li>
+              <li><a href="../index.html#nosotros"><i class="fas fa-chevron-right"></i> Nosotros</a></li>
+              <li><a href="../index.html#contacto"><i class="fas fa-chevron-right"></i> Contacto</a></li>
+            </ul>
+          </div>
+          <div class="col-md-2 footer-links">
+            <h6>Servicios</h6>
+            <ul>
+              <li><a href="agendar-cita.html"><i class="fas fa-chevron-right"></i> Agendar Cita</a></li>
+              <li><a href="consultar-citas.html"><i class="fas fa-chevron-right"></i> Consultar Citas</a></li>
+              <li><a href="catalogo/clasicas.html"><i class="fas fa-chevron-right"></i> Gafas Clásicas</a></li>
+              <li><a href="catalogo/modernas.html"><i class="fas fa-chevron-right"></i> Gafas Modernas</a></li>
+            </ul>
+          </div>
+          <div class="col-md-3 footer-links">
+            <h6>Contacto</h6>
+            <ul>
+              <li><a href="tel:+5756642580"><i class="fas fa-phone"></i> +57 (5) 664-2580</a></li>
+              <li><a href="https://wa.me/573105551234"><i class="fab fa-whatsapp"></i> +57 310 555 1234</a></li>
+              <li><a href="mailto:info@surtilentes.com"><i class="fas fa-envelope"></i> info@surtilentes.com</a></li>
+              <li><a href="../index.html#contacto"><i class="fas fa-map-marker-alt"></i> Carrera 9 #25-48</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>&copy; 2025 Surtilentes Óptica — Todos los derechos reservados</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== WHATSAPP FLOATING BUTTON ===== -->
+  <a href="https://wa.me/573105551234" class="whatsapp-float" target="_blank" aria-label="WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+  <!-- ===== MODAL DE VALIDACIÓN ===== -->
+  <div class="modal fade" id="validationModal" tabindex="-1" aria-labelledby="validationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="border: none; border-radius: 16px; overflow: hidden;">
+        <div class="modal-header" style="background: linear-gradient(135deg, #e63946, #d62828); color: white; border: none; padding: 20px 30px;">
+          <h5 class="modal-title" id="validationModalLabel" style="font-weight: 700; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-exclamation-circle" style="font-size: 1.5rem;"></i>
+            <span>Campos Incompletos</span>
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" style="padding: 30px;">
+          <p style="color: #555; font-size: 1rem; margin-bottom: 20px;">
+            Por favor complete los siguientes campos para continuar:
+          </p>
+          <ul id="validationModalList" style="list-style: none; padding: 0; margin: 0;">
+            <!-- Los errores se insertarán aquí dinámicamente -->
+          </ul>
+        </div>
+        <div class="modal-footer" style="border: none; padding: 20px 30px; background: #f8f9fa;">
+          <button type="button" class="btn" data-bs-dismiss="modal" 
+                  style="background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+                         color: white; font-weight: 600; padding: 10px 30px; border: none; border-radius: 8px;">
+            <i class="fas fa-check-circle"></i> Entendido
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/config/api-config.js"></script>
+  <script src="../assets/js/pages/appointments.js"></script>
+
+  <script>
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const href = this.getAttribute('href');
+        if (href.startsWith('#')) {
+          const target = document.querySelector(href);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        } else {
+          window.location.href = href;
+        }
+      });
+    });
+
+    // Navbar scroll effect
+    const navbar = document.querySelector('.navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+    // ============ VALIDACIÓN DE CAMPOS NUMÉRICOS ============
+    (function () {
+      // Crear toast de alerta
+      const toast = document.createElement('div');
+      toast.id = 'validationToast';
+      toast.style.cssText = `
+  position: fixed; top: 80px; right: 20px; z-index: 9999;
+  background: linear-gradient(135deg, #e63946, #d62828); color: white;
+  padding: 14px 24px; border-radius: 12px; font-weight: 600;
+  box-shadow: 0 8px 25px rgba(230,57,70,0.4); font-size: 0.95rem;
+  transform: translateX(calc(100% + 40px)); transition: transform 0.4s ease, visibility 0s 0.4s;
+  display: flex; align-items: center; gap: 10px; max-width: 350px;
+  visibility: hidden;
+  `;
+      document.body.appendChild(toast);
+
+      function showToast(msg) {
+        toast.innerHTML = '<i class="fas fa-exclamation-triangle"></i>' + msg;
+        toast.style.visibility = 'visible';
+        toast.style.transition = 'transform 0.4s ease';
+        toast.style.transform = 'translateX(0)';
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(() => {
+          toast.style.transition = 'transform 0.4s ease, visibility 0s 0.4s';
+          toast.style.transform = 'translateX(calc(100% + 40px))';
+          toast.style.visibility = 'hidden';
+        }, 3000);
+      }
+
+      // Función para validar campo numérico
+      function setupNumericField(inputId, maxDigits, fieldName) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+
+        input.addEventListener('input', function () {
+          const original = this.value;
+          this.value = this.value.replace(/[^0-9]/g, '');
+
+          if (this.value !== original) {
+            showToast(fieldName + ': solo se permiten números');
+          }
+
+          if (this.value.length > maxDigits) {
+            this.value = this.value.slice(0, maxDigits);
+            showToast(fieldName + ': máximo ' + maxDigits + ' dígitos');
+          }
+        });
+
+        input.addEventListener('paste', function (e) {
+          e.preventDefault();
+          const pasted = (e.clipboardData || window.clipboardData).getData('text');
+          const cleaned = pasted.replace(/[^0-9]/g, '').slice(0, maxDigits);
+          this.value = cleaned;
+          if (cleaned !== pasted) {
+            showToast(fieldName + ': solo números (máx. ' + maxDigits + ' dígitos)');
+          }
+        });
+      }
+
+      // Aplicar validación a documento y teléfono
+      setupNumericField('documentNumber', 10, 'Documento');
+      setupNumericField('phone', 10, 'Teléfono');
+    })();
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Gafas Modernas - Surtilentes</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <link rel="stylesheet" href="../../assets/css/index.css">
+
+    <link rel="shortcut icon" href="../../assets/images/products/logo.jpg" type="image/x-icon">
+</head>
+
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="../../index.html#inicio">
+                <i class="fas fa-glasses"></i>Surtilentes
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="../../index.html#inicio">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="../../index.html#catalogo">Catálogo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../index.html#nosotros">Nosotros</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../../index.html#contacto">Contacto</a></li>
+                    <li class="nav-item"><a class="nav-link btn-agendar-nav" href="../agendar-cita.html"><i
+                                class="fas fa-calendar-check me-1"></i>Agendar Cita</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../consultar-citas.html"><i
+                                class="fas fa-search me-1"></i>Consultar Citas</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section id="catalogo-modernas" class="section bg-light">
+        <div class="container">
+            <h2 class="section-title animate__animated animate__fadeIn">Gafas Modernas y de Diseño</h2>
+
+            <div class="filter-bar card shadow-sm mb-5 animate__animated animate__fadeInUp">
+                <div class="card-body">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-lg-3 col-md-12">
+                            <label for="filtro-nombre" class="form-label">Buscar por nombre</label>
+                            <input type="text" id="filtro-nombre" class="form-control" placeholder="Ej: Polarizado...">
+                        </div>
+
+                        <div class="col-lg-4 col-md-6">
+                            <label class="form-label">Precio</label>
+                            <div class="input-group">
+                                <input type="number" id="filtro-precio-min" class="form-control" placeholder="Min"
+                                    min="0">
+                                <span class="input-group-text">-</span>
+                                <input type="number" id="filtro-precio-max" class="form-control" placeholder="Max"
+                                    min="0">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2 col-md-6">
+                            <label for="filtro-calidad" class="form-label">Calidad</label>
+                            <select id="filtro-calidad" class="form-select">
+                                <option value="todas" selected>Todas</option>
+                                <option value="premium">Premium</option>
+                                <option value="estandar">Estándar</option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-2 col-md-6">
+                            <label for="filtro-tipo" class="form-label">Estilo</label>
+                            <select id="filtro-tipo" class="form-select">
+                                <option value="todos" selected>Todos</option>
+                                <option value="formula">Fórmula</option>
+                                <option value="sol">Sol</option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-1 col-md-6 d-grid">
+                            <label class="form-label d-none d-lg-block">&nbsp;</label>
+                            <button id="btn-limpiar" class="btn btn-outline-secondary" title="Limpiar filtros">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="productos-grid" class="row">
+            </div>
+
+            <div id="no-resultados" class="text-center" style="display: none;">
+                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                <h3 class="text-muted">No se encontraron productos</h3>
+                <p>Intenta ajustar tus filtros de búsqueda.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="footer-main">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 footer-brand">
+                        <h4><i class="fas fa-glasses"></i> Surtilentes</h4>
+                        <p>Tu visión, nuestra pasión. Óptica profesional con más de 10 años de experiencia en Cartagena
+                            de Indias.</p>
+                        <div class="footer-social">
+                            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                            <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-md-2 offset-md-1 footer-links">
+                        <h6>Navegación</h6>
+                        <ul>
+                            <li><a href="../../index.html#inicio"><i class="fas fa-chevron-right"></i> Inicio</a></li>
+                            <li><a href="../../index.html#catalogo"><i class="fas fa-chevron-right"></i> Catálogo</a>
+                            </li>
+                            <li><a href="../../index.html#nosotros"><i class="fas fa-chevron-right"></i> Nosotros</a>
+                            </li>
+                            <li><a href="../../index.html#contacto"><i class="fas fa-chevron-right"></i> Contacto</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-2 footer-links">
+                        <h6>Servicios</h6>
+                        <ul>
+                            <li><a href="../agendar-cita.html"><i class="fas fa-chevron-right"></i> Agendar Cita</a>
+                            </li>
+                            <li><a href="../consultar-citas.html"><i class="fas fa-chevron-right"></i> Consultar
+                                    Citas</a></li>
+                            <li><a href="clasicas.html"><i class="fas fa-chevron-right"></i> Gafas Clásicas</a></li>
+                            <li><a href="modernas.html"><i class="fas fa-chevron-right"></i> Gafas Modernas</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3 footer-links">
+                        <h6>Contacto</h6>
+                        <ul>
+                            <li><a href="tel:+5756642580"><i class="fas fa-phone"></i> +57 (5) 664-2580</a></li>
+                            <li><a href="https://wa.me/573105551234"><i class="fab fa-whatsapp"></i> +57 310 555
+                                    1234</a></li>
+                            <li><a href="mailto:info@surtilentes.com"><i class="fas fa-envelope"></i>
+                                    info@surtilentes.com</a></li>
+                            <li><a href="../../index.html#contacto"><i class="fas fa-map-marker-alt"></i> Carrera 9
+                                    #25-48</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2025 Surtilentes Óptica — Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== WHATSAPP FLOATING BUTTON ===== -->
+    <a href="https://wa.me/573105551234" class="whatsapp-float" target="_blank" aria-label="WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../assets/js/pages/catalogo-modernas.js"></script>
+    <script>
+        // Navbar scroll effect
+        const navbar = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+    </script>
+</body>
+
+</html>

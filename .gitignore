@@ -1,0 +1,36 @@
+# Archivos del sistema
+nul
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Credenciales sensibles
+python-email-sender/credentials.json
+python-email-sender/config.py
+*.log
+
+# Node modules
+node_modules/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporales
+*.tmp
+*.bak

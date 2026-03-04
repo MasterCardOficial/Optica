@@ -1,0 +1,424 @@
+/**
+ * SURTILENTES - NAVBAR
+ * Navegación profesional y responsive
+ */
+
+/* ============================================
+   NAVBAR BASE
+   ============================================ */
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--navbar-height);
+    background: var(--bg-gradient);
+    box-shadow: var(--shadow-md);
+    z-index: var(--z-sticky);
+    transition: all var(--transition-base);
+}
+
+.navbar.scrolled {
+    height: calc(var(--navbar-height) - 10px);
+    box-shadow: var(--shadow-lg);
+}
+
+.navbar-container {
+    max-width: var(--container-xl);
+    height: 100%;
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* ============================================
+   LOGO Y MARCA
+   ============================================ */
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    color: var(--white);
+    text-decoration: none;
+    transition: transform var(--transition-base);
+}
+
+.navbar-brand:hover {
+    transform: scale(1.05);
+}
+
+.navbar-brand-icon {
+    font-size: var(--text-3xl);
+    animation: pulse 2s infinite;
+}
+
+.navbar-brand-text {
+    font-family: var(--font-heading);
+}
+
+/* ============================================
+   MENÚ DE NAVEGACIÓN
+   ============================================ */
+
+.navbar-menu {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-item {
+    position: relative;
+}
+
+.navbar-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    font-weight: var(--font-medium);
+    font-size: var(--text-base);
+    border-radius: var(--radius);
+    transition: all var(--transition-base);
+    position: relative;
+}
+
+.navbar-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: var(--space-4);
+    right: var(--space-4);
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transition: transform var(--transition-base);
+}
+
+.navbar-link:hover {
+    color: var(--white);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-link:hover::after {
+    transform: scaleX(1);
+}
+
+.navbar-link.active {
+    color: var(--white);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.navbar-link.active::after {
+    transform: scaleX(1);
+}
+
+/* ============================================
+   DROPDOWN MENU
+   ============================================ */
+
+.navbar-dropdown {
+    position: relative;
+}
+
+.navbar-dropdown-toggle::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid currentColor;
+    margin-left: var(--space-2);
+}
+
+.navbar-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    min-width: 200px;
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    padding: var(--space-2);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all var(--transition-base);
+    list-style: none;
+}
+
+.navbar-dropdown:hover .navbar-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.navbar-dropdown-item {
+    margin: 0;
+}
+
+.navbar-dropdown-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    color: var(--gray-700);
+    text-decoration: none;
+    border-radius: var(--radius);
+    transition: all var(--transition-fast);
+}
+
+.navbar-dropdown-link:hover {
+    background: var(--secondary-lighter);
+    color: var(--primary);
+}
+
+.navbar-dropdown-link i {
+    width: 20px;
+    text-align: center;
+    color: var(--secondary);
+}
+
+/* ============================================
+   ACCIONES (CTA, Carrito, etc)
+   ============================================ */
+
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.navbar-action-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: var(--radius-full);
+    color: var(--white);
+    font-size: var(--text-xl);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.navbar-action-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.navbar-action-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    background: var(--error);
+    color: var(--white);
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-weight: var(--font-bold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: bounce 0.5s ease-out;
+}
+
+.navbar-cta {
+    margin-left: var(--space-4);
+}
+
+/* ============================================
+   MOBILE TOGGLE
+   ============================================ */
+
+.navbar-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--space-2);
+}
+
+.navbar-toggle-line {
+    width: 25px;
+    height: 3px;
+    background: var(--white);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-base);
+}
+
+.navbar-toggle.active .navbar-toggle-line:nth-child(1) {
+    transform: rotate(45deg) translateY(8px);
+}
+
+.navbar-toggle.active .navbar-toggle-line:nth-child(2) {
+    opacity: 0;
+}
+
+.navbar-toggle.active .navbar-toggle-line:nth-child(3) {
+    transform: rotate(-45deg) translateY(-8px);
+}
+
+/* ============================================
+   RESPONSIVE - MOBILE
+   ============================================ */
+
+@media (max-width: 992px) {
+    .navbar {
+        height: var(--navbar-height-mobile);
+    }
+    
+    .navbar-toggle {
+        display: flex;
+        z-index: 1001;
+    }
+    
+    .navbar-menu {
+        position: fixed;
+        top: var(--navbar-height-mobile);
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--primary-dark);
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: var(--space-6);
+        transform: translateX(-100%);
+        transition: transform var(--transition-base);
+        overflow-y: auto;
+    }
+    
+    .navbar-menu.active {
+        transform: translateX(0);
+    }
+    
+    .navbar-link {
+        padding: var(--space-4);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .navbar-link::after {
+        display: none;
+    }
+    
+    .navbar-dropdown-menu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        background: rgba(255, 255, 255, 0.05);
+        margin-top: var(--space-2);
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height var(--transition-base);
+    }
+    
+    .navbar-dropdown.active .navbar-dropdown-menu {
+        max-height: 500px;
+    }
+    
+    .navbar-dropdown-toggle {
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .navbar-dropdown-link {
+        color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .navbar-dropdown-link:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--white);
+    }
+    
+    .navbar-actions {
+        order: -1;
+        gap: var(--space-2);
+    }
+    
+    .navbar-cta {
+        display: none;
+    }
+    
+    /* Mostrar CTA en el menú mobile */
+    .navbar-menu::after {
+        content: 'Agendar Cita';
+        display: block;
+        padding: var(--space-4);
+        background: var(--accent);
+        color: var(--white);
+        text-align: center;
+        border-radius: var(--radius-full);
+        font-weight: var(--font-bold);
+        margin-top: var(--space-6);
+    }
+}
+
+/* ============================================
+   ANIMACIONES
+   ============================================ */
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+/* ============================================
+   NAVBAR TRANSPARENT (Para hero sections)
+   ============================================ */
+
+.navbar-transparent {
+    background: transparent;
+    box-shadow: none;
+}
+
+.navbar-transparent.scrolled {
+    background: var(--bg-gradient);
+    box-shadow: var(--shadow-md);
+}
+
+/* ============================================
+   SPACING HELPER
+   ============================================ */
+
+.navbar-spacer {
+    height: var(--navbar-height);
+}
+
+@media (max-width: 992px) {
+    .navbar-spacer {
+        height: var(--navbar-height-mobile);
+    }
+}

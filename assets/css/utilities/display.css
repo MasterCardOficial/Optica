@@ -1,0 +1,279 @@
+/* ===================================
+   DISPLAY UTILITIES
+   Show/hide and responsive display utilities
+   =================================== */
+
+/* Display types */
+.d-none { display: none !important; }
+.d-block { display: block !important; }
+.d-inline { display: inline !important; }
+.d-inline-block { display: inline-block !important; }
+.d-flex { display: flex !important; }
+.d-inline-flex { display: inline-flex !important; }
+.d-grid { display: grid !important; }
+.d-inline-grid { display: inline-grid !important; }
+
+/* Visibility */
+.visible { visibility: visible !important; }
+.invisible { visibility: hidden !important; }
+
+/* Overflow */
+.overflow-auto { overflow: auto !important; }
+.overflow-hidden { overflow: hidden !important; }
+.overflow-visible { overflow: visible !important; }
+.overflow-scroll { overflow: scroll !important; }
+
+.overflow-x-auto { overflow-x: auto !important; }
+.overflow-x-hidden { overflow-x: hidden !important; }
+.overflow-x-visible { overflow-x: visible !important; }
+.overflow-x-scroll { overflow-x: scroll !important; }
+
+.overflow-y-auto { overflow-y: auto !important; }
+.overflow-y-hidden { overflow-y: hidden !important; }
+.overflow-y-visible { overflow-y: visible !important; }
+.overflow-y-scroll { overflow-y: scroll !important; }
+
+/* Position */
+.position-static { position: static !important; }
+.position-relative { position: relative !important; }
+.position-absolute { position: absolute !important; }
+.position-fixed { position: fixed !important; }
+.position-sticky { position: sticky !important; }
+
+/* Width utilities */
+.w-25 { width: 25% !important; }
+.w-50 { width: 50% !important; }
+.w-75 { width: 75% !important; }
+.w-100 { width: 100% !important; }
+.w-auto { width: auto !important; }
+
+.w-fit { width: fit-content !important; }
+.w-min { width: min-content !important; }
+.w-max { width: max-content !important; }
+
+/* Height utilities */
+.h-25 { height: 25% !important; }
+.h-50 { height: 50% !important; }
+.h-75 { height: 75% !important; }
+.h-100 { height: 100% !important; }
+.h-auto { height: auto !important; }
+
+.h-fit { height: fit-content !important; }
+.h-min { height: min-content !important; }
+.h-max { height: max-content !important; }
+
+/* Viewport units */
+.vw-100 { width: 100vw !important; }
+.vh-100 { height: 100vh !important; }
+.min-vw-100 { min-width: 100vw !important; }
+.min-vh-100 { min-height: 100vh !important; }
+
+/* Opacity */
+.opacity-0 { opacity: 0 !important; }
+.opacity-25 { opacity: 0.25 !important; }
+.opacity-50 { opacity: 0.5 !important; }
+.opacity-75 { opacity: 0.75 !important; }
+.opacity-100 { opacity: 1 !important; }
+
+/* Pointer events */
+.pointer-events-none { pointer-events: none !important; }
+.pointer-events-auto { pointer-events: auto !important; }
+
+/* Cursor */
+.cursor-pointer { cursor: pointer !important; }
+.cursor-default { cursor: default !important; }
+.cursor-not-allowed { cursor: not-allowed !important; }
+.cursor-move { cursor: move !important; }
+.cursor-grab { cursor: grab !important; }
+.cursor-grabbing { cursor: grabbing !important; }
+
+/* User select */
+.user-select-none { user-select: none !important; }
+.user-select-auto { user-select: auto !important; }
+.user-select-text { user-select: text !important; }
+.user-select-all { user-select: all !important; }
+
+/* Object fit */
+.object-cover { object-fit: cover !important; }
+.object-contain { object-fit: contain !important; }
+.object-fill { object-fit: fill !important; }
+.object-none { object-fit: none !important; }
+.object-scale-down { object-fit: scale-down !important; }
+
+/* Object position */
+.object-center { object-position: center !important; }
+.object-top { object-position: top !important; }
+.object-bottom { object-position: bottom !important; }
+.object-left { object-position: left !important; }
+.object-right { object-position: right !important; }
+
+/* Z-index */
+.z-0 { z-index: 0 !important; }
+.z-10 { z-index: 10 !important; }
+.z-20 { z-index: 20 !important; }
+.z-30 { z-index: 30 !important; }
+.z-40 { z-index: 40 !important; }
+.z-50 { z-index: 50 !important; }
+.z-auto { z-index: auto !important; }
+
+/* Float */
+.float-left { float: left !important; }
+.float-right { float: right !important; }
+.float-none { float: none !important; }
+
+/* Clear */
+.clear-left { clear: left !important; }
+.clear-right { clear: right !important; }
+.clear-both { clear: both !important; }
+.clear-none { clear: none !important; }
+
+/* ===================================
+   RESPONSIVE DISPLAY UTILITIES
+   Mobile first approach
+   =================================== */
+
+/* Small devices (tablets, 640px and up) */
+@media (min-width: 640px) {
+  .d-sm-none { display: none !important; }
+  .d-sm-block { display: block !important; }
+  .d-sm-inline { display: inline !important; }
+  .d-sm-inline-block { display: inline-block !important; }
+  .d-sm-flex { display: flex !important; }
+  .d-sm-inline-flex { display: inline-flex !important; }
+  .d-sm-grid { display: grid !important; }
+  .d-sm-inline-grid { display: inline-grid !important; }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  .d-md-none { display: none !important; }
+  .d-md-block { display: block !important; }
+  .d-md-inline { display: inline !important; }
+  .d-md-inline-block { display: inline-block !important; }
+  .d-md-flex { display: flex !important; }
+  .d-md-inline-flex { display: inline-flex !important; }
+  .d-md-grid { display: grid !important; }
+  .d-md-inline-grid { display: inline-grid !important; }
+}
+
+/* Large devices (desktops, 1024px and up) */
+@media (min-width: 1024px) {
+  .d-lg-none { display: none !important; }
+  .d-lg-block { display: block !important; }
+  .d-lg-inline { display: inline !important; }
+  .d-lg-inline-block { display: inline-block !important; }
+  .d-lg-flex { display: flex !important; }
+  .d-lg-inline-flex { display: inline-flex !important; }
+  .d-lg-grid { display: grid !important; }
+  .d-lg-inline-grid { display: inline-grid !important; }
+}
+
+/* Extra large devices (large desktops, 1280px and up) */
+@media (min-width: 1280px) {
+  .d-xl-none { display: none !important; }
+  .d-xl-block { display: block !important; }
+  .d-xl-inline { display: inline !important; }
+  .d-xl-inline-block { display: inline-block !important; }
+  .d-xl-flex { display: flex !important; }
+  .d-xl-inline-flex { display: inline-flex !important; }
+  .d-xl-grid { display: grid !important; }
+  .d-xl-inline-grid { display: inline-grid !important; }
+}
+
+/* 2X large devices (larger desktops, 1536px and up) */
+@media (min-width: 1536px) {
+  .d-2xl-none { display: none !important; }
+  .d-2xl-block { display: block !important; }
+  .d-2xl-inline { display: inline !important; }
+  .d-2xl-inline-block { display: inline-block !important; }
+  .d-2xl-flex { display: flex !important; }
+  .d-2xl-inline-flex { display: inline-flex !important; }
+  .d-2xl-grid { display: grid !important; }
+  .d-2xl-inline-grid { display: inline-grid !important; }
+}
+
+/* Print utilities */
+@media print {
+  .d-print-none { display: none !important; }
+  .d-print-block { display: block !important; }
+  .d-print-inline { display: inline !important; }
+  .d-print-inline-block { display: inline-block !important; }
+}
+
+/* Screen reader only (accessible but invisible) */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border-width: 0 !important;
+}
+
+/* Screen reader only on focus */
+.sr-only-focusable:active,
+.sr-only-focusable:focus {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+  clip: auto !important;
+  white-space: normal !important;
+}
+
+/* Hide on mobile */
+@media (max-width: 639px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+/* Hide on tablet */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .hide-tablet {
+    display: none !important;
+  }
+}
+
+/* Hide on desktop */
+@media (min-width: 1024px) {
+  .hide-desktop {
+    display: none !important;
+  }
+}
+
+/* Show only on mobile */
+.show-mobile {
+  display: block !important;
+}
+
+@media (min-width: 640px) {
+  .show-mobile {
+    display: none !important;
+  }
+}
+
+/* Show only on tablet */
+.show-tablet {
+  display: none !important;
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .show-tablet {
+    display: block !important;
+  }
+}
+
+/* Show only on desktop */
+.show-desktop {
+  display: none !important;
+}
+
+@media (min-width: 1024px) {
+  .show-desktop {
+    display: block !important;
+  }
+}

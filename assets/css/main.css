@@ -1,0 +1,42 @@
+/**
+ * SURTILENTES - MAIN CSS
+ * Archivo principal que importa todos los módulos
+ * Orden de importación es importante!
+ */
+
+/* ============================================
+   1. BASE - Fundamentos
+   ============================================ */
+@import './base/variables.css';
+@import './base/reset.css';
+@import './base/typography.css';
+
+/* ============================================
+   2. LAYOUTS - Estructura general
+   ============================================ */
+@import './layouts/containers.css';
+@import './layouts/grid.css';
+@import './layouts/sections.css';
+
+/* ============================================
+   3. COMPONENTS - Componentes reutilizables
+   ============================================ */
+@import './components/buttons.css';
+@import './components/cards.css';
+@import './components/forms.css';
+@import './components/navbar.css';
+@import './components/footer.css';
+@import './components/modal.css';
+
+/* ============================================
+   4. PAGES - Estilos específicos de páginas
+   ============================================ */
+@import './pages/appointments.css';
+@import './pages/producto-detalle.css';
+
+/* ============================================
+   5. UTILITIES - Clases de utilidad
+   ============================================ */
+@import './utilities/spacing.css';
+@import './utilities/display.css';
+@import './utilities/animations.css';

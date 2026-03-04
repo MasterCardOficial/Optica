@@ -1,0 +1,455 @@
+/**
+ * SURTILENTES - CARDS
+ * Componentes de tarjetas profesionales
+ */
+
+/* ============================================
+   CARD BASE
+   ============================================ */
+
+.card {
+    background: var(--white);
+    border-radius: var(--card-radius);
+    padding: var(--card-padding);
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-base);
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ============================================
+   CARD PRODUCT (Tarjeta de Producto)
+   ============================================ */
+
+.card-product {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    background: var(--white);
+    transition: all var(--transition-base);
+    position: relative;
+}
+
+.card-product:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+    border-color: var(--secondary);
+}
+
+/* Imagen del producto */
+.card-product-image {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    background: var(--gray-100);
+}
+
+.card-product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+
+.card-product:hover .card-product-image img {
+    transform: scale(1.1);
+}
+
+/* Badge en la imagen */
+.card-product-badge {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+    background: var(--accent);
+    color: var(--white);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-weight: var(--font-bold);
+    text-transform: uppercase;
+    z-index: 1;
+}
+
+.card-product-badge.new {
+    background: var(--success);
+}
+
+.card-product-badge.sale {
+    background: var(--error);
+}
+
+/* Overlay con acciones rápidas */
+.card-product-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 36, 99, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    opacity: 0;
+    transition: opacity var(--transition-base);
+}
+
+.card-product:hover .card-product-overlay {
+    opacity: 1;
+}
+
+.card-product-overlay .btn {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all var(--transition-base);
+}
+
+.card-product:hover .card-product-overlay .btn {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.card-product:hover .card-product-overlay .btn:nth-child(1) {
+    transition-delay: 0.1s;
+}
+
+.card-product:hover .card-product-overlay .btn:nth-child(2) {
+    transition-delay: 0.2s;
+}
+
+.card-product:hover .card-product-overlay .btn:nth-child(3) {
+    transition-delay: 0.3s;
+}
+
+/* Contenido del producto */
+.card-product-body {
+    padding: var(--space-5);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-product-category {
+    font-size: var(--text-xs);
+    color: var(--secondary);
+    text-transform: uppercase;
+    font-weight: var(--font-semibold);
+    letter-spacing: var(--tracking-wide);
+    margin-bottom: var(--space-2);
+}
+
+.card-product-title {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    color: var(--primary);
+    margin-bottom: var(--space-3);
+    line-height: var(--leading-tight);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.card-product-description {
+    font-size: var(--text-sm);
+    color: var(--gray-600);
+    margin-bottom: var(--space-4);
+    line-height: var(--leading-relaxed);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex: 1;
+}
+
+.card-product-specs {
+    display: flex;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+    font-size: var(--text-xs);
+    color: var(--gray-600);
+}
+
+.card-product-specs span {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+/* Footer del producto */
+.card-product-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--gray-200);
+}
+
+.card-product-price {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.card-product-price-current {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    color: var(--accent);
+}
+
+.card-product-price-old {
+    font-size: var(--text-sm);
+    color: var(--gray-500);
+    text-decoration: line-through;
+}
+
+.card-product-rating {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.card-product-stars {
+    display: flex;
+    gap: 2px;
+    color: var(--warning);
+}
+
+.card-product-reviews {
+    font-size: var(--text-xs);
+    color: var(--gray-600);
+}
+
+/* ============================================
+   CARD SERVICE (Tarjeta de Servicio)
+   ============================================ */
+
+.card-service {
+    text-align: center;
+    padding: var(--space-8);
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    border: 2px solid var(--gray-200);
+    transition: all var(--transition-base);
+    height: 100%;
+}
+
+.card-service:hover {
+    border-color: var(--secondary);
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-xl);
+}
+
+.card-service-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--space-6);
+    background: linear-gradient(135deg, var(--secondary-lighter) 0%, var(--secondary-light) 100%);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: var(--primary);
+    transition: all var(--transition-base);
+}
+
+.card-service:hover .card-service-icon {
+    transform: scale(1.1) rotate(5deg);
+    background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
+}
+
+.card-service-title {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: var(--primary);
+    margin-bottom: var(--space-3);
+}
+
+.card-service-description {
+    color: var(--gray-600);
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-6);
+}
+
+.card-service-features {
+    list-style: none;
+    text-align: left;
+    margin-bottom: var(--space-6);
+}
+
+.card-service-features li {
+    padding: var(--space-2) 0;
+    color: var(--gray-700);
+    font-size: var(--text-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.card-service-features li::before {
+    content: '✓';
+    color: var(--accent);
+    font-weight: var(--font-bold);
+    font-size: var(--text-lg);
+}
+
+/* ============================================
+   CARD TESTIMONIAL (Tarjeta de Testimonio)
+   ============================================ */
+
+.card-testimonial {
+    padding: var(--space-8);
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    position: relative;
+    height: 100%;
+}
+
+.card-testimonial::before {
+    content: '"';
+    position: absolute;
+    top: var(--space-6);
+    left: var(--space-6);
+    font-size: 5rem;
+    font-family: var(--font-heading);
+    color: var(--secondary-lighter);
+    line-height: 1;
+}
+
+.card-testimonial-text {
+    font-size: var(--text-lg);
+    color: var(--gray-700);
+    line-height: var(--leading-relaxed);
+    font-style: italic;
+    margin-bottom: var(--space-6);
+    position: relative;
+    z-index: 1;
+}
+
+.card-testimonial-rating {
+    display: flex;
+    gap: var(--space-1);
+    color: var(--warning);
+    margin-bottom: var(--space-4);
+}
+
+.card-testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--gray-200);
+}
+
+.card-testimonial-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.card-testimonial-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-testimonial-info h4 {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    color: var(--primary);
+    margin-bottom: var(--space-1);
+}
+
+.card-testimonial-info p {
+    font-size: var(--text-sm);
+    color: var(--gray-600);
+}
+
+/* ============================================
+   CARD APPOINTMENT (Tarjeta de Cita)
+   ============================================ */
+
+.card-appointment {
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    border: 2px solid var(--gray-200);
+    padding: var(--space-6);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    position: relative;
+}
+
+.card-appointment:hover {
+    border-color: var(--secondary);
+    box-shadow: var(--shadow-lg);
+}
+
+.card-appointment.selected {
+    border-color: var(--accent);
+    background: var(--secondary-lighter);
+}
+
+.card-appointment.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.card-appointment-time {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    color: var(--primary);
+    margin-bottom: var(--space-2);
+}
+
+.card-appointment-duration {
+    font-size: var(--text-sm);
+    color: var(--gray-600);
+}
+
+.card-appointment-badge {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+    background: var(--success);
+    color: var(--white);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .card-product-overlay {
+        display: none;
+    }
+    
+    .card-service {
+        padding: var(--space-6);
+    }
+    
+    .card-service-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+    }
+    
+    .card-testimonial {
+        padding: var(--space-6);
+    }
+}

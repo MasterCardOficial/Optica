@@ -1,0 +1,740 @@
+/* ===================================
+   APPOINTMENTS PAGE STYLES
+   Booking system page specific styles
+   =================================== */
+
+/* ===================================
+   APPOINTMENT CONTAINER
+   =================================== */
+
+.appointment-page {
+  min-height: 100vh;
+  padding: var(--spacing-20) 0 var(--spacing-10);
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-white) 50%);
+}
+
+.appointment-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-4);
+}
+
+/* ===================================
+   APPOINTMENT HEADER
+   =================================== */
+
+.appointment-header {
+  text-align: center;
+  margin-bottom: var(--spacing-8);
+}
+
+.appointment-header__title {
+  font-size: var(--font-size-4xl);
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-3);
+  font-family: var(--font-heading);
+}
+
+.appointment-header__subtitle {
+  font-size: var(--font-size-lg);
+  color: var(--color-gray-600);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ===================================
+   PROGRESS INDICATOR
+   =================================== */
+
+.appointment-progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-8);
+  padding: var(--spacing-6);
+  background-color: var(--color-white);
+  border-radius: var(--border-radius-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.progress-step {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.progress-step__number {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius-full);
+  background-color: var(--color-gray-200);
+  color: var(--color-gray-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: var(--font-size-lg);
+  transition: all var(--transition-normal);
+}
+
+.progress-step__label {
+  font-weight: 600;
+  color: var(--color-gray-500);
+  font-size: var(--font-size-sm);
+  transition: color var(--transition-normal);
+}
+
+.progress-step.active .progress-step__number {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  transform: scale(1.1);
+}
+
+.progress-step.active .progress-step__label {
+  color: var(--color-primary);
+}
+
+.progress-step.completed .progress-step__number {
+  background-color: var(--color-success);
+  color: var(--color-white);
+}
+
+.progress-step.completed .progress-step__label {
+  color: var(--color-success);
+}
+
+.progress-divider {
+  width: 60px;
+  height: 2px;
+  background-color: var(--color-gray-200);
+  margin: 0 var(--spacing-2);
+}
+
+.progress-step.completed + .progress-divider {
+  background-color: var(--color-success);
+}
+
+/* ===================================
+   APPOINTMENT FORM CARD
+   =================================== */
+
+.appointment-form-card {
+  background-color: var(--color-white);
+  border-radius: var(--border-radius-xl);
+  box-shadow: var(--shadow-lg);
+  padding: var(--spacing-8);
+  margin-bottom: var(--spacing-6);
+  min-height: 500px;
+}
+
+/* ===================================
+   STEP CONTENT
+   =================================== */
+
+.step-content {
+  display: none;
+  animation: fadeInUp 0.4s ease-out;
+}
+
+.step-content.active {
+  display: block;
+}
+
+.step-title {
+  font-size: var(--font-size-2xl);
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-2);
+  font-family: var(--font-heading);
+}
+
+.step-description {
+  font-size: var(--font-size-base);
+  color: var(--color-gray-600);
+  margin-bottom: var(--spacing-6);
+}
+
+/* ===================================
+   SERVICE SELECTION (STEP 1)
+   =================================== */
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
+}
+
+.service-card {
+  background-color: var(--color-white);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-5);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.service-card:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.service-card.selected {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+.service-card.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  background-color: var(--color-success);
+  color: var(--color-white);
+  border-radius: var(--border-radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: var(--font-size-lg);
+}
+
+.service-card__icon {
+  font-size: 48px;
+  margin-bottom: var(--spacing-3);
+  display: block;
+}
+
+.service-card__title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-2);
+}
+
+.service-card__description {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-600);
+  margin-bottom: var(--spacing-3);
+  line-height: 1.6;
+}
+
+.service-card__details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--spacing-3);
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.service-card__duration,
+.service-card__price {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.service-card__duration {
+  color: var(--color-gray-700);
+}
+
+.service-card__price {
+  color: var(--color-accent);
+  font-size: var(--font-size-lg);
+}
+
+/* ===================================
+   DATE SELECTION (STEP 2)
+   =================================== */
+
+.date-picker-container {
+  max-width: 600px;
+  margin: 0 auto var(--spacing-6);
+}
+
+.calendar {
+  background-color: var(--color-white);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-4);
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-4);
+  padding-bottom: var(--spacing-3);
+  border-bottom: 2px solid var(--color-gray-200);
+}
+
+.calendar-month {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.calendar-nav {
+  display: flex;
+  gap: var(--spacing-2);
+}
+
+.calendar-nav-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background-color: var(--color-gray-100);
+  color: var(--color-primary);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-lg);
+  transition: all var(--transition-normal);
+}
+
+.calendar-nav-btn:hover {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-2);
+}
+
+.calendar-weekday {
+  text-align: center;
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-600);
+  padding: var(--spacing-2);
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--spacing-2);
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--border-radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  background-color: var(--color-white);
+  color: var(--color-gray-700);
+}
+
+.calendar-day:hover:not(.disabled):not(.selected) {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-light);
+  transform: scale(1.05);
+}
+
+.calendar-day.selected {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+.calendar-day.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  background-color: var(--color-gray-100);
+}
+
+.calendar-day.today {
+  border-color: var(--color-accent);
+  font-weight: 700;
+}
+
+/* ===================================
+   TIME SELECTION (STEP 3)
+   =================================== */
+
+.time-slots-container {
+  max-width: 600px;
+  margin: 0 auto var(--spacing-6);
+}
+
+.selected-date-display {
+  text-align: center;
+  margin-bottom: var(--spacing-6);
+  padding: var(--spacing-4);
+  background-color: var(--color-primary-light);
+  border-radius: var(--border-radius-lg);
+}
+
+.selected-date-display__label {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-600);
+  margin-bottom: var(--spacing-1);
+}
+
+.selected-date-display__value {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.time-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--spacing-3);
+}
+
+.time-slot {
+  padding: var(--spacing-4);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--border-radius-md);
+  text-align: center;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  background-color: var(--color-white);
+}
+
+.time-slot:hover:not(.disabled):not(.selected) {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-light);
+  transform: translateY(-2px);
+}
+
+.time-slot.selected {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+.time-slot.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background-color: var(--color-gray-100);
+}
+
+/* ===================================
+   PERSONAL INFO FORM (STEP 4)
+   =================================== */
+
+.personal-info-form {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* ===================================
+   CONFIRMATION (STEP 5)
+   =================================== */
+
+.confirmation-container {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.confirmation-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto var(--spacing-4);
+  background-color: var(--color-success-light);
+  color: var(--color-success);
+  border-radius: var(--border-radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  animation: scaleIn 0.5s ease-out;
+}
+
+.confirmation-title {
+  font-size: var(--font-size-3xl);
+  color: var(--color-success);
+  margin-bottom: var(--spacing-3);
+  font-family: var(--font-heading);
+}
+
+.confirmation-message {
+  font-size: var(--font-size-lg);
+  color: var(--color-gray-600);
+  margin-bottom: var(--spacing-6);
+}
+
+.appointment-summary {
+  background-color: var(--color-gray-50);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-6);
+  text-align: left;
+  margin-bottom: var(--spacing-6);
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-3) 0;
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+}
+
+.summary-item__label {
+  font-weight: 600;
+  color: var(--color-gray-600);
+}
+
+.summary-item__value {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+/* ===================================
+   NAVIGATION BUTTONS
+   =================================== */
+
+.appointment-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-6);
+  padding-top: var(--spacing-6);
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.appointment-actions .btn {
+  flex: 1;
+  max-width: 200px;
+}
+
+.appointment-actions .btn--back {
+  margin-right: auto;
+}
+
+.appointment-actions .btn--next {
+  margin-left: auto;
+}
+
+/* ===================================
+   RESPONSIVE DESIGN
+   =================================== */
+
+@media (max-width: 768px) {
+  .appointment-page {
+    padding: var(--spacing-16) 0 var(--spacing-6);
+  }
+
+  .appointment-header__title {
+    font-size: var(--font-size-3xl);
+  }
+
+  .appointment-form-card {
+    padding: var(--spacing-5);
+  }
+
+  .appointment-progress {
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding: var(--spacing-4);
+  }
+
+  .progress-step__label {
+    display: none;
+  }
+
+  .progress-step.active .progress-step__label {
+    display: block;
+  }
+
+  .progress-divider {
+    width: 30px;
+  }
+
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .calendar-days {
+    gap: var(--spacing-1);
+  }
+
+  .calendar-day {
+    font-size: var(--font-size-sm);
+  }
+
+  .time-slots-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--spacing-2);
+  }
+
+  .time-slot {
+    padding: var(--spacing-3);
+    font-size: var(--font-size-sm);
+  }
+
+  .appointment-actions {
+    flex-direction: column;
+  }
+
+  .appointment-actions .btn {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .appointment-header__title {
+    font-size: var(--font-size-2xl);
+  }
+
+  .step-title {
+    font-size: var(--font-size-xl);
+  }
+
+  .service-card__icon {
+    font-size: 36px;
+  }
+
+  .time-slots-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ===================================
+   NUEVOS ESTILOS ADICIONALES
+   =================================== */
+
+/* Form hints */
+.form-hint {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-600);
+  margin-top: var(--spacing-2);
+}
+
+/* Radio group */
+.form-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+/* Calendar info */
+.calendar-info {
+  margin-top: var(--spacing-4);
+  padding: var(--spacing-4);
+  background-color: var(--color-info-light);
+  border-radius: var(--border-radius-lg);
+  border-left: 4px solid var(--color-info);
+}
+
+.calendar-info ul {
+  list-style: none;
+  padding: 0;
+  margin: var(--spacing-2) 0 0;
+}
+
+.calendar-info li {
+  padding: var(--spacing-1) 0;
+  color: var(--color-gray-700);
+}
+
+/* Recommendations box dentro del formulario */
+.recommendations-box {
+  background: linear-gradient(135deg, var(--color-accent-light) 0%, var(--color-white) 100%);
+  border-left: 4px solid var(--color-accent);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-5);
+  margin-top: var(--spacing-5);
+  animation: fadeIn 0.5s ease-out;
+}
+
+.recommendations-box__title {
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-3);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.recommendations-box__content {
+  color: var(--color-gray-700);
+}
+
+.recommendations-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.recommendations-list li {
+  padding: var(--spacing-2) 0;
+  padding-left: var(--spacing-6);
+  position: relative;
+  line-height: 1.6;
+}
+
+.recommendations-list li:before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--color-success);
+  font-weight: 700;
+  font-size: var(--font-size-lg);
+}
+
+/* Final recommendations en confirmación */
+.final-recommendations {
+  background-color: var(--color-gray-50);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-6);
+  margin-top: var(--spacing-6);
+}
+
+.confirmation-note {
+  text-align: center;
+  margin-top: var(--spacing-6);
+  padding: var(--spacing-5);
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-white) 100%);
+  border-radius: var(--border-radius-lg);
+  border: 2px solid var(--color-primary);
+}
+
+.confirmation-note p {
+  margin: var(--spacing-2) 0;
+  color: var(--color-gray-700);
+}
+
+/* Ajustes para formularios médicos */
+.medical-info-form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Responsive para recommendations */
+@media (max-width: 768px) {
+  .recommendations-box {
+    padding: var(--spacing-4);
+  }
+
+  .recommendations-box__title {
+    font-size: var(--font-size-base);
+  }
+
+  .recommendations-list li {
+    font-size: var(--font-size-sm);
+    padding-left: var(--spacing-5);
+  }
+}
