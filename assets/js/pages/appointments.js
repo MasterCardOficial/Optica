@@ -417,6 +417,17 @@ function renderCalendar() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   
+  // 🕐 LÓGICA MEJORADA: Si son más de las 6pm, el mínimo día disponible es mañana
+  const now = new Date();
+  const currentHour = now.getHours();
+  const minAvailableDate = new Date(today);
+  
+  // Si son las 6pm (18:00) o después, no permitir seleccionar hoy
+  if (currentHour >= 18) {
+    minAvailableDate.setDate(minAvailableDate.getDate() + 1);
+    console.log('⏰ Son más de las 6pm. Fecha mínima disponible:', minAvailableDate.toLocaleDateString());
+  }
+  
   // Días vacíos antes del mes
   for (let i = 0; i < firstDay; i++) {
     const emptyDay = document.createElement('div');
@@ -437,9 +448,15 @@ function renderCalendar() {
     }
     
     const dayOfWeek = dateObj.getDay();
-    // Deshabilitar: fechas pasadas, domingos
-    if (dateObj < today || dayOfWeek === 0) {
+    
+    // Deshabilitar: fechas pasadas, antes de minAvailableDate, o domingos
+    if (dateObj < minAvailableDate || dayOfWeek === 0) {
       dayElement.classList.add('disabled');
+      
+      // Mostrar tooltip si es hoy pero después de las 6pm
+      if (dateObj.getTime() === today.getTime() && currentHour >= 18) {
+        dayElement.title = 'No disponible - Ya son más de las 6pm. Selecciona desde mañana.';
+      }
     } else {
       dayElement.addEventListener('click', function() {
         if (!this.classList.contains('disabled')) {

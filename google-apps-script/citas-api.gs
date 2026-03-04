@@ -604,3 +604,344 @@ function testEndpoint() {
   Logger.log('Revisa tu email (también SPAM) para ver la confirmación.');
   Logger.log('');
 }
+
+// ========================================
+// SISTEMA DE RECORDATORIOS DE CITAS
+// ========================================
+
+/**
+ * Función que envía recordatorios de citas para MAÑANA
+ * Esta función debe ejecutarse DIARIAMENTE (configurar trigger)
+ * 
+ * Para automatizar:
+ * 1. En el editor de Apps Script, ve a: Activadores (reloj ⏰)
+ * 2. Click en "+ Agregar activador"
+ * 3. Función: sendAppointmentReminders
+ * 4. Evento: Activador de tiempo
+ * 5. Tipo: Diariamente
+ * 6. Hora: 7:00 p.m. a 8:00 p.m. (enviar recordatorio en la tarde)
+ * 7. Guardar
+ */
+function sendAppointmentReminders() {
+  Logger.log('🔔 Iniciando envío de recordatorios de citas...');
+  
+  try {
+    // Abrir hoja de cálculo
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const sheet = ss.getSheetByName(SHEET_NAME);
+    
+    if (!sheet) {
+      Logger.log('❌ Hoja no encontrada');
+      return;
+    }
+    
+    // Obtener todas las citas
+    const lastRow = sheet.getLastRow();
+    if (lastRow <= 1) {
+      Logger.log('ℹ️ No hay citas registradas');
+      return;
+    }
+    
+    const data = sheet.getRange(2, 1, lastRow - 1, 22).getValues();
+    
+    // Calcular fecha de mañana (sin hora)
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    
+    const tomorrowStr = `${tomorrow.getDate()}/${tomorrow.getMonth() + 1}/${tomorrow.getFullYear()}`;
+    
+    Logger.log(`📅 Buscando citas para mañana: ${tomorrowStr}`);
+    
+    let remindersSent = 0;
+    let remindersSkipped = 0;
+    
+    // Recorrer todas las filas
+    for (let i = 0; i < data.length; i++) {
+      const row = data[i];
+      
+      // Columna N (índice 13) = Fecha Cita
+      const fechaCitaStr = row[13] ? row[13].toString() : '';
+      
+      // Verificar si la fecha de la cita es mañana
+      if (fechaCitaStr === tomorrowStr) {
+        // Extraer datos del paciente
+        const email = row[7]; // Columna H
+        const nombreCompleto = row[4]; // Columna E
+        const numeroCita = row[3]; // Columna D
+        const hora = row[14]; // Columna O
+        const servicio = row[10]; // Columna K
+        const estado = row[20]; // Columna U
+        
+        // Solo enviar si tiene email y la cita está confirmada
+        if (email && email.includes('@') && estado === 'confirmada') {
+          try {
+            sendReminderEmail({
+              email: email,
+              nombreCompleto: nombreCompleto,
+              numeroCita: numeroCita,
+              fecha: fechaCitaStr,
+              hora: hora,
+              servicio: servicio
+            });
+            
+            remindersSent++;
+            Logger.log(`✅ Recordatorio enviado a: ${email} (${nombreCompleto})`);
+            
+          } catch (emailError) {
+            Logger.log(`⚠️ Error al enviar recordatorio a ${email}: ${emailError.toString()}`);
+            remindersSkipped++;
+          }
+        } else {
+          remindersSkipped++;
+          Logger.log(`⏭️ Cita omitida: ${nombreCompleto} (sin email o no confirmada)`);
+        }
+      }
+    }
+    
+    Logger.log('');
+    Logger.log('═══════════════════════════════════════');
+    Logger.log(`✅ Recordatorios enviados: ${remindersSent}`);
+    Logger.log(`⏭️ Recordatorios omitidos: ${remindersSkipped}`);
+    Logger.log('═══════════════════════════════════════');
+    
+  } catch (error) {
+    Logger.log('❌ Error en sendAppointmentReminders: ' + error.toString());
+  }
+}
+
+/**
+ * Envía email de recordatorio (1 día antes de la cita)
+ */
+function sendReminderEmail(data) {
+  const emailAddress = data.email;
+  const customerName = data.nombreCompleto;
+  const appointmentNumber = data.numeroCita;
+  const fecha = data.fecha;
+  const hora = data.hora;
+  const servicio = data.servicio;
+  
+  // Link de Google Maps
+  const mapsLink = 'https://www.google.com/maps/dir/?api=1&destination=Optica+Surtilentes+Cartagena';
+  
+  // Asunto del correo
+  const subject = `🔔 Recordatorio: Tu cita es MAÑANA - ${appointmentNumber} | Surtilentes`;
+  
+  // Cuerpo del correo en HTML
+  const htmlBody = `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f0f4f8; padding: 20px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+          
+          <!-- Header con gradiente -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 40px 30px; text-align: center;">
+              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700;">
+                🔔 ¡Recordatorio de Cita!
+              </h1>
+              <p style="margin: 10px 0 0; color: #fff7ed; font-size: 14px;">
+                Surtilentes Óptica
+              </p>
+            </td>
+          </tr>
+          
+          <!-- Mensaje principal -->
+          <tr>
+            <td style="padding: 30px 30px 20px; text-align: center;">
+              <h2 style="margin: 0; color: #d97706; font-size: 24px;">
+                ¡Hola, ${customerName}!
+              </h2>
+              <p style="margin: 15px 0 0; color: #64748b; font-size: 18px; font-weight: 600;">
+                Tu cita es <span style="color: #f59e0b;">MAÑANA</span>
+              </p>
+            </td>
+          </tr>
+          
+          <!-- Detalles de la cita -->
+          <tr>
+            <td style="padding: 0 30px 30px;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%); border-radius: 12px; padding: 25px; border: 2px solid #f59e0b;">
+                <tr>
+                  <td style="padding-bottom: 20px;">
+                    <table width="100%" cellpadding="8" cellspacing="0">
+                      <tr>
+                        <td width="40%" style="color: #92400e; font-weight: 700; font-size: 14px;">
+                          📋 Número de Cita:
+                        </td>
+                        <td style="color: #1e3a8a; font-weight: 700; font-size: 16px;">
+                          ${appointmentNumber}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="color: #92400e; font-weight: 700; font-size: 14px;">
+                          📅 Fecha:
+                        </td>
+                        <td style="color: #334155; font-size: 15px;">
+                          MAÑANA (${fecha})
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="color: #92400e; font-weight: 700; font-size: 14px;">
+                          🕐 Hora:
+                        </td>
+                        <td style="color: #334155; font-size: 15px;">
+                          ${hora}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="color: #92400e; font-weight: 700; font-size: 14px;">
+                          🔬 Servicio:
+                        </td>
+                        <td style="color: #334155; font-size: 15px;">
+                          ${servicio}
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Recordatorios importantes -->
+          <tr>
+            <td style="padding: 0 30px 30px;">
+              <div style="background: #fee2e2; border-left: 4px solid #ef4444; padding: 20px; border-radius: 8px;">
+                <h3 style="margin: 0 0 12px; color: #991b1b; font-size: 16px;">
+                  ⏰ Por favor recuerda:
+                </h3>
+                <ul style="margin: 0; padding-left: 20px; color: #7f1d1d; font-size: 14px; line-height: 1.8;">
+                  <li>Llega <strong>10 minutos antes</strong> de tu cita</li>
+                  <li>Trae tu <strong>documento de identidad</strong></li>
+                  <li>Si usas gafas o lentes, <strong>tráelos</strong></li>
+                  <li>Si tienes fórmula médica anterior, <strong>preséntala</strong></li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+          
+          <!-- Ubicación -->
+          <tr>
+            <td style="padding: 0 30px 30px;">
+              <div style="background: #f1f5f9; border: 2px solid #cbd5e1; border-radius: 12px; padding: 20px; text-align: center;">
+                <h3 style="margin: 0 0 15px; color: #1e3a8a; font-size: 18px;">
+                  📍 Nuestra Ubicación
+                </h3>
+                <p style="margin: 0 0 10px; color: #334155; font-size: 15px;">
+                  <strong>SURTILENTES ÓPTICA</strong><br>
+                  Carrera 9 #25-48<br>
+                  Centro Histórico, Cartagena
+                </p>
+                <a href="${mapsLink}" style="display: inline-block; margin-top: 15px; padding: 12px 30px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; text-decoration: none; border-radius: 50px; font-weight: 700; font-size: 14px;">
+                  🗺️ Ver en Google Maps
+                </a>
+              </div>
+            </td>
+          </tr>
+          
+          <!-- Contacto -->
+          <tr>
+            <td style="padding: 0 30px 30px;">
+              <p style="text-align: center; color: #64748b; font-size: 14px; margin: 0;">
+                ¿Necesitas reprogramar o cancelar?<br>
+                Llámanos: <a href="tel:+5756642580" style="color: #1e3a8a; font-weight: 700; text-decoration: none;">+57 (5) 664-2580</a><br>
+                WhatsApp: <a href="https://wa.me/573105551234" style="color: #059669; font-weight: 700; text-decoration: none;">+57 310 555 1234</a>
+              </p>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); padding: 25px 30px; text-align: center;">
+              <p style="margin: 0 0 10px; color: #e0e7ff; font-size: 14px;">
+                ¡Nos vemos mañana! 👋
+              </p>
+              <p style="margin: 0; color: #bfdbfe; font-size: 12px;">
+                © 2026 Surtilentes Óptica - Cartagena, Colombia
+              </p>
+            </td>
+          </tr>
+          
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `;
+  
+  // Texto plano como fallback
+  const plainBody = `
+🔔 RECORDATORIO DE CITA - SURTILENTES ÓPTICA
+
+¡Hola, ${customerName}!
+
+Tu cita es MAÑANA:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DETALLES DE TU CITA:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 Número de Cita: ${appointmentNumber}
+📅 Fecha: MAÑANA (${fecha})
+🕐 Hora: ${hora}
+🔬 Servicio: ${servicio}
+
+⏰ POR FAVOR RECUERDA:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Llega 10 minutos antes de tu cita
+• Trae tu documento de identidad
+• Si usas gafas o lentes, tráelos
+• Si tienes fórmula médica anterior, preséntala
+
+📍 NUESTRA UBICACIÓN:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SURTILENTES ÓPTICA
+Carrera 9 #25-48
+Centro Histórico, Cartagena
+
+Ver en Google Maps: ${mapsLink}
+
+CONTACTO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📞 Teléfono: +57 (5) 664-2580
+💬 WhatsApp: +57 310 555 1234
+
+¿Necesitas reprogramar o cancelar?
+Contáctanos con anticipación.
+
+¡Nos vemos mañana! 👋
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+© 2026 Surtilentes Óptica - Cartagena, Colombia
+  `;
+  
+  // Enviar correo
+  MailApp.sendEmail({
+    to: emailAddress,
+    subject: subject,
+    htmlBody: htmlBody,
+    body: plainBody,
+    name: 'Surtilentes Óptica - Recordatorios'
+  });
+  
+  Logger.log(`📧 Recordatorio enviado a: ${emailAddress}`);
+}
+
+/**
+ * Función de prueba para el sistema de recordatorios
+ * Ejecuta esta función para probar que todo funciona
+ */
+function testReminders() {
+  Logger.log('🧪 Probando sistema de recordatorios...');
+  sendAppointmentReminders();
+  Logger.log('✅ Prueba completada. Revisa los logs arriba.');
+}
+
