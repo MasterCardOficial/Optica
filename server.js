@@ -1,11 +1,33 @@
 const express = require('express');
 const path = require('path');
+const compression = require('compression');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// Middleware para servir archivos estáticos
-app.use(express.static(__dirname));
+// Habilitar compresión GZIP para todas las respuestas
+app.use(compression());
+
+// Configurar cache para recursos estáticos (1 día)
+app.use(express.static(__dirname, {
+  maxAge: '1d',
+  etag: true,
+  lastModified: true
+}));
+
+// Health check endpoint (para mantener el servicio activo)
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime() 
+  });
+});
+
+// Ping endpoint para keepalive
+app.get('/ping', (req, res) => {
+  res.send('pong');
+});
 
 // Rutas específicas
 app.get('/', (req, res) => {

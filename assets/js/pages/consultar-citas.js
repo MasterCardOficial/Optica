@@ -12,6 +12,55 @@ const API_URL = typeof API_CONFIG !== 'undefined' && API_CONFIG.SHEETS_API_URL !
   : null;
 const DEV_MODE = typeof API_CONFIG !== 'undefined' ? API_CONFIG.DEV_MODE : true;
 
+// ===================================
+// UTILIDADES DE RED (RETRY LOGIC)
+// ===================================
+
+/**
+ * Función auxiliar para hacer fetch con reintentos automáticos
+ * Útil cuando el servidor de Render está "despertando" (plan gratuito)
+ */
+async function fetchWithRetry(url, options = {}, maxRetries = 3, delayMs = 2000) {
+  let lastError;
+  
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      console.log(`🔄 Intento ${i + 1}/${maxRetries} de conexión...`);
+      
+      // Aumentar timeout para el plan gratuito de Render (puede tardar en despertar)
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 segundos
+      
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      // Si llegamos aquí, la petición fue exitosa
+      console.log('✅ Conexión exitosa');
+      return response;
+      
+    } catch (error) {
+      lastError = error;
+      console.warn(`⚠️ Intento ${i + 1} falló:`, error.message);
+      
+      // Si no es el último intento, esperar antes de reintentar
+      if (i < maxRetries - 1) {
+        console.log(`⏳ Esperando ${delayMs/1000} segundos antes de reintentar...`);
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+        // Aumentar el delay para el siguiente intento
+        delayMs *= 1.5;
+      }
+    }
+  }
+  
+  // Si llegamos aquí, todos los intentos fallaron
+  console.error('❌ Todos los intentos fallaron');
+  throw lastError;
+}
+
 // Recomendaciones por servicio (igual que en appointments.js)
 const serviceRecommendations = {
   'examen-visual': [
@@ -133,10 +182,10 @@ async function searchAppointments(documentType, documentNumber) {
   try {
     console.log('📤 Consultando Google Sheets...');
     
-    const response = await fetch(`${API_URL}?cedula=${documentNumber}`, {
+    const response = await fetchWithRetry(`${API_URL}?cedula=${documentNumber}`, {
       method: 'GET',
       mode: 'cors'
-    });
+    }, 3, 2000); // 3 intentos, 2 segundos de delay inicial
     
     const data = await response.json();
     
@@ -153,7 +202,13 @@ async function searchAppointments(documentType, documentNumber) {
     searchButton.disabled = false;
     documentTypeInput.disabled = false;
     documentNumberInput.disabled = false;
-    alert('❌ Error al consultar la base de datos.\n\nPor favor verifique su conexión a internet e intente nuevamente.');
+    
+    // Mensaje más amigable para el usuario
+    const errorMsg = error.name === 'AbortError' 
+      ? '⏱️ La consulta está tardando más de lo normal.\n\nEsto puede ocurrir si el servidor estaba inactivo (plan gratuito).\n\nPor favor, intenta de nuevo en unos segundos.' 
+      : '❌ Error al consultar la base de datos.\n\nPor favor verifica tu conexión a internet e intenta nuevamente.';
+    
+    alert(errorMsg);
     showNoResults();
     return;
   }

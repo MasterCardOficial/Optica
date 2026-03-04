@@ -21,6 +21,55 @@ const API_URL = typeof API_CONFIG !== 'undefined' && API_CONFIG.SHEETS_API_URL !
 const DEV_MODE = typeof API_CONFIG !== 'undefined' ? API_CONFIG.DEV_MODE : true;
 
 // ===================================
+// UTILIDADES DE RED (RETRY LOGIC)
+// ===================================
+
+/**
+ * Función auxiliar para hacer fetch con reintentos automáticos
+ * Útil cuando el servidor de Render está "despertando" (plan gratuito)
+ */
+async function fetchWithRetry(url, options = {}, maxRetries = 3, delayMs = 2000) {
+  let lastError;
+  
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      console.log(`🔄 Intento ${i + 1}/${maxRetries} de conexión...`);
+      
+      // Aumentar timeout para el plan gratuito de Render (puede tardar en despertar)
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 segundos
+      
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      // Si llegamos aquí, la petición fue exitosa
+      console.log('✅ Conexión exitosa');
+      return response;
+      
+    } catch (error) {
+      lastError = error;
+      console.warn(`⚠️ Intento ${i + 1} falló:`, error.message);
+      
+      // Si no es el último intento, esperar antes de reintentar
+      if (i < maxRetries - 1) {
+        console.log(`⏳ Esperando ${delayMs/1000} segundos antes de reintentar...`);
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+        // Aumentar el delay para el siguiente intento
+        delayMs *= 1.5;
+      }
+    }
+  }
+  
+  // Si llegamos aquí, todos los intentos fallaron
+  console.error('❌ Todos los intentos fallaron');
+  throw lastError;
+}
+
+// ===================================
 // ESTADO GLOBAL
 // ===================================
 const appointmentState = {
@@ -527,16 +576,20 @@ async function saveAppointment() {
     try {
       console.log('📤 Guardando cita en Google Sheets...');
       
-      const response = await fetch(API_URL, {
+      // Mostrar mensaje de carga al usuario
+      showLoadingMessage('Guardando tu cita... Esto puede tardar unos segundos la primera vez.');
+      
+      const response = await fetchWithRetry(API_URL, {
         method: 'POST',
         mode: 'no-cors', // Google Apps Script requiere no-cors
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(appointment)
-      });
+      }, 3, 2000); // 3 intentos, 2 segundos de delay inicial
       
       console.log('✅ Cita guardada en Google Sheets');
+      hideLoadingMessage();
       
       // También guardar en localStorage como backup
       saveToLocalStorage(appointment);
@@ -546,6 +599,11 @@ async function saveAppointment() {
     } catch (error) {
       console.error('❌ Error al guardar en Google Sheets:', error);
       console.log('💾 Guardando en localStorage como fallback');
+      
+      hideLoadingMessage();
+      
+      // Mostrar mensaje al usuario pero continuar
+      showWarningMessage('La cita se guardó localmente. Es posible que necesites contactarnos para confirmarla.');
       
       // Fallback a localStorage
       saveToLocalStorage(appointment);
@@ -557,6 +615,61 @@ async function saveAppointment() {
     saveToLocalStorage(appointment);
     return appointment;
   }
+}
+
+// Funciones auxiliares para mensajes de carga
+function showLoadingMessage(message) {
+  // Buscar o crear el elemento de loading
+  let loadingDiv = document.getElementById('global-loading');
+  if (!loadingDiv) {
+    loadingDiv = document.createElement('div');
+    loadingDiv.id = 'global-loading';
+    loadingDiv.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      color: white;
+      font-size: 18px;
+      text-align: center;
+      padding: 20px;
+    `;
+    document.body.appendChild(loadingDiv);
+  }
+  loadingDiv.innerHTML = `
+    <div>
+      <div style="margin-bottom: 20px;">
+        <div class="spinner" style="
+          border: 4px solid rgba(255,255,255,0.3);
+          border-top: 4px solid white;
+          border-radius: 50%;
+          width: 50px;
+          height: 50px;
+          animation: spin 1s linear infinite;
+          margin: 0 auto;
+        "></div>
+      </div>
+      <div>${message}</div>
+    </div>
+  `;
+  loadingDiv.style.display = 'flex';
+}
+
+function hideLoadingMessage() {
+  const loadingDiv = document.getElementById('global-loading');
+  if (loadingDiv) {
+    loadingDiv.style.display = 'none';
+  }
+}
+
+function showWarningMessage(message) {
+  alert('⚠️ ' + message);
 }
 
 function saveToLocalStorage(appointment) {
