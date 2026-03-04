@@ -42,6 +42,26 @@ function doPost(e) {
     // Parsear datos recibidos
     const data = JSON.parse(e.postData.contents);
     
+    // NUEVO: Manejar acciones de productos
+    if (data.action === 'addProduct') {
+      const result = addProduct(data.product);
+      output.setContent(JSON.stringify(result));
+      return output;
+    }
+    
+    if (data.action === 'updateProduct') {
+      const result = updateProduct(data.product);
+      output.setContent(JSON.stringify(result));
+      return output;
+    }
+    
+    if (data.action === 'deleteProduct') {
+      const result = deleteProduct(data.productId);
+      output.setContent(JSON.stringify(result));
+      return output;
+    }
+    
+    // Si no es una acción de producto, procesar como cita
     // Abrir la hoja de cálculo
     const ss = SpreadsheetApp.openById(SHEET_ID);
     let sheet = ss.getSheetByName(SHEET_NAME);
@@ -147,6 +167,20 @@ function doGet(e) {
     const output = ContentService.createTextOutput();
     output.setMimeType(ContentService.MimeType.JSON);
     
+    // NUEVO: Manejar consultas de productos
+    if (e.parameter.action === 'getProducts') {
+      const categoria = e.parameter.categoria || null;
+      const products = getProducts(categoria);
+      
+      output.setContent(JSON.stringify({
+        success: true,
+        count: products.length,
+        products: products
+      }));
+      return output;
+    }
+    
+    // Si no es productos, procesar como consulta de citas
     // Obtener parámetros
     const cedula = e.parameter.cedula;
     
@@ -943,5 +977,288 @@ function testReminders() {
   Logger.log('🧪 Probando sistema de recordatorios...');
   sendAppointmentReminders();
   Logger.log('✅ Prueba completada. Revisa los logs arriba.');
+}
+
+// ========================================
+// SISTEMA DE GESTIÓN DE PRODUCTOS
+// ========================================
+
+const PRODUCTS_SHEET_NAME = 'Productos';
+
+/**
+ * Inicializar la hoja de productos si no existe
+ */
+function initializeProductsSheet() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  let sheet = ss.getSheetByName(PRODUCTS_SHEET_NAME);
+  
+  if (!sheet) {
+    sheet = ss.insertSheet(PRODUCTS_SHEET_NAME);
+    sheet.appendRow([
+      'Timestamp',           // A
+      'ID',                  // B
+      'Categoria',           // C
+      'Nombre',              // D
+      'Precio',              // E
+      'Modelo',              // F
+      'Descripcion',         // G
+      'Montura',             // H
+      'Medidas',             // I
+      'Forma',               // J
+      'Color',               // K
+      'Garantia',            // L
+      'Imagen',              // M
+      'Stock',               // N
+      'Activo',              // O
+      'Fecha Creacion',      // P
+      'Fecha Modificacion'   // Q
+    ]);
+    
+    // Formato de encabezados
+    const headerRange = sheet.getRange('A1:Q1');
+    headerRange.setBackground('#4A148C');
+    headerRange.setFontColor('#FFFFFF');
+    headerRange.setFontWeight('bold');
+    
+    Logger.log('✅ Hoja de Productos creada exitosamente');
+  }
+  
+  return sheet;
+}
+
+/**
+ * Obtener todos los productos (con filtro opcional por categoría)
+ */
+function getProducts(categoria = null, activeOnly = true) {
+  const sheet = initializeProductsSheet();
+  const lastRow = sheet.getLastRow();
+  
+  if (lastRow <= 1) {
+    return [];
+  }
+  
+  const data = sheet.getRange(2, 1, lastRow - 1, 17).getValues();
+  const products = [];
+  
+  for (let i = 0; i < data.length; i++) {
+    const row = data[i];
+    
+    // Estructura: Timestamp, ID, Categoria, Nombre, Precio, Modelo, Descripcion,
+    //             Montura, Medidas, Forma, Color, Garantia, Imagen, Stock, Activo,
+    //             Fecha Creacion, Fecha Modificacion
+    
+    const isActive = row[14] === true || row[14] === 'TRUE' || row[14] === 'SI' || row[14] === true;
+    
+    // Filtrar inactivos si se solicita
+    if (activeOnly && !isActive) {
+      continue;
+    }
+    
+    // Filtrar por categoría si se especifica
+    if (categoria && row[2] !== categoria) {
+      continue;
+    }
+    
+    const product = {
+      id: row[1] || '',
+      categoria: row[2] || '',
+      nombre: row[3] || '',
+      precio: row[4] || 0,
+      modelo: row[5] || '',
+      descripcion: row[6] || '',
+      montura: row[7] || '',
+      medidas: row[8] || '',
+      forma: row[9] || '',
+      color: row[10] || '',
+      garantia: row[11] || '2 años',
+      imagen: row[12] || '',
+      stock: row[13] || 0,
+      activo: isActive,
+      fechaCreacion: row[15] || row[0],
+      fechaModificacion: row[16] || row[0]
+    };
+    
+    products.push(product);
+  }
+  
+  return products;
+}
+
+/**
+ * Agregar un nuevo producto
+ */
+function addProduct(productData) {
+  const sheet = initializeProductsSheet();
+  const timestamp = new Date().toISOString();
+  
+  const rowData = [
+    new Date().toLocaleString('es-CO'),    // A: Timestamp
+    productData.id,                         // B: ID
+    productData.categoria,                  // C: Categoria
+    productData.nombre,                     // D: Nombre
+    productData.precio,                     // E: Precio
+    productData.modelo || '',               // F: Modelo
+    productData.descripcion,                // G: Descripcion
+    productData.montura || '',              // H: Montura
+    productData.medidas || '',              // I: Medidas
+    productData.forma || '',                // J: Forma
+    productData.color || '',                // K: Color
+    productData.garantia || '2 años',       // L: Garantia
+    productData.imagen,                     // M: Imagen
+    productData.stock || 0,                 // N: Stock
+    'SI',                                   // O: Activo
+    timestamp,                              // P: Fecha Creacion
+    timestamp                               // Q: Fecha Modificacion
+  ];
+  
+  sheet.appendRow(rowData);
+  Logger.log(`✅ Producto agregado: ${productData.nombre} (ID: ${productData.id})`);
+  
+  return {
+    success: true,
+    message: 'Producto agregado exitosamente',
+    productId: productData.id
+  };
+}
+
+/**
+ * Actualizar un producto existente
+ */
+function updateProduct(productData) {
+  const sheet = initializeProductsSheet();
+  const lastRow = sheet.getLastRow();
+  
+  if (lastRow <= 1) {
+    return {
+      success: false,
+      message: 'No hay productos para actualizar'
+    };
+  }
+  
+  // Buscar el producto por ID (columna B)
+  const ids = sheet.getRange(2, 2, lastRow - 1, 1).getValues();
+  let rowIndex = -1;
+  
+  for (let i = 0; i < ids.length; i++) {
+    if (ids[i][0] === productData.id) {
+      rowIndex = i + 2; // +2 porque empezamos en fila 2
+      break;
+    }
+  }
+  
+  if (rowIndex === -1) {
+    return {
+      success: false,
+      message: 'Producto no encontrado'
+    };
+  }
+  
+  // Actualizar los datos (mantener ID, Fecha Creación y Activo)
+  const timestamp = new Date().toISOString();
+  
+  sheet.getRange(rowIndex, 1).setValue(new Date().toLocaleString('es-CO')); // Timestamp
+  sheet.getRange(rowIndex, 3).setValue(productData.categoria);
+  sheet.getRange(rowIndex, 4).setValue(productData.nombre);
+  sheet.getRange(rowIndex, 5).setValue(productData.precio);
+  sheet.getRange(rowIndex, 6).setValue(productData.modelo || '');
+  sheet.getRange(rowIndex, 7).setValue(productData.descripcion);
+  sheet.getRange(rowIndex, 8).setValue(productData.montura || '');
+  sheet.getRange(rowIndex, 9).setValue(productData.medidas || '');
+  sheet.getRange(rowIndex, 10).setValue(productData.forma || '');
+  sheet.getRange(rowIndex, 11).setValue(productData.color || '');
+  sheet.getRange(rowIndex, 12).setValue(productData.garantia || '2 años');
+  sheet.getRange(rowIndex, 13).setValue(productData.imagen);
+  sheet.getRange(rowIndex, 14).setValue(productData.stock || 0);
+  sheet.getRange(rowIndex, 17).setValue(timestamp); // Fecha Modificacion
+  
+  Logger.log(`✅ Producto actualizado: ${productData.nombre} (ID: ${productData.id})`);
+  
+  return {
+    success: true,
+    message: 'Producto actualizado exitosamente',
+    productId: productData.id
+  };
+}
+
+/**
+ * Eliminar un producto (soft delete)
+ */
+function deleteProduct(productId) {
+  const sheet = initializeProductsSheet();
+  const lastRow = sheet.getLastRow();
+  
+  if (lastRow <= 1) {
+    return {
+      success: false,
+      message: 'No hay productos para eliminar'
+    };
+  }
+  
+  // Buscar el producto por ID (columna B)
+  const ids = sheet.getRange(2, 2, lastRow - 1, 1).getValues();
+  let rowIndex = -1;
+  
+  for (let i = 0; i < ids.length; i++) {
+    if (ids[i][0] === productId) {
+      rowIndex = i + 2;
+      break;
+    }
+  }
+  
+  if (rowIndex === -1) {
+    return {
+      success: false,
+      message: 'Producto no encontrado'
+    };
+  }
+  
+  // Marcar como inactivo (columna O)
+  sheet.getRange(rowIndex, 15).setValue('NO');
+  sheet.getRange(rowIndex, 1).setValue(new Date().toLocaleString('es-CO'));
+  sheet.getRange(rowIndex, 17).setValue(new Date().toISOString());
+  
+  Logger.log(`🗑️ Producto eliminado (soft delete): ${productId}`);
+  
+  return {
+    success: true,
+    message: 'Producto eliminado exitosamente',
+    productId: productId
+  };
+}
+
+/**
+ * Función de prueba para productos
+ */
+function testProducts() {
+  Logger.log('🧪 Probando sistema de productos...');
+  
+  // Inicializar hoja
+  initializeProductsSheet();
+  
+  // Agregar producto de prueba
+  const testProduct = {
+    id: 'TEST-' + Date.now(),
+    categoria: 'modernas',
+    nombre: 'Gafas de Prueba',
+    precio: 50000,
+    modelo: 'TEST-001',
+    descripcion: 'Producto de prueba para verificar el sistema',
+    montura: 'Acetato',
+    medidas: '50-20-140 mm',
+    forma: 'Redonda',
+    color: 'Negro',
+    garantia: '2 años',
+    imagen: 'https://via.placeholder.com/150',
+    stock: 10
+  };
+  
+  const addResult = addProduct(testProduct);
+  Logger.log('Agregar producto:', addResult);
+  
+  // Listar productos
+  const products = getProducts();
+  Logger.log(`Total productos: ${products.length}`);
+  
+  Logger.log('✅ Prueba completada.');
 }
 
